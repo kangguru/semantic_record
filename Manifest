@@ -1,0 +1,13 @@
+lib/semantic_record/base.rb
+lib/semantic_record/result_parser_json.rb
+lib/semantic_record/sesame_adapter.rb
+lib/semantic_record/support.rb
+lib/semantic_record.rb
+Manifest
+Rakefile
+spec/helper.rb
+spec/result_parser_json_spec.rb
+spec/rspec_autotest.rb
+spec/semantic_record_spec.rb
+spec/spec.opts
+spec/spec_helper.rb
