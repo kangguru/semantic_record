@@ -24,6 +24,6 @@ require 'spec'
 require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 
 
-class Genre < ActiveSemantic::Base
+class Genre < SemanticRecord::Base
   
 end

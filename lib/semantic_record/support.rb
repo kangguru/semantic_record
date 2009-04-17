@@ -1,4 +1,4 @@
-module ActiveSemantic
+module SemanticRecord
   module Support
     Array.class_eval do
       def to_sparql_properties
@@ -8,9 +8,9 @@ module ActiveSemantic
     
     Hash.class_eval do
       def to_optional_clause
-        properties = collect {|k,v| "<#{k}> ?#{k.to_human_name}" }.join('; ')
+        properties = collect {|k,v| "OPTIONAL { ?uri <#{k}> ?#{k.to_human_name}. }" }.join(' ')
         
-        properties!="" ? "?instance #{properties}" : ""
+#        properties!="" ? "?uri #{properties}" : ""
       end      
     end    
     

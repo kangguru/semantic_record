@@ -1,4 +1,4 @@
-module ActiveSemantic
+module SemanticRecord
   module ResultParserJson
     require "json"
     def self.hash_values(json_document)
@@ -12,6 +12,20 @@ module ActiveSemantic
       end
       
       return hash
+    end
+    
+    def self.parse(json_document)
+      ary = []
+      json_document = JSON.parse(json_document)
+      json_document['results']['bindings'].each do |binding|
+        hash = {}
+        binding.collect do |key|
+          hash.merge!({key[0] => key[1]['value']})
+        end
+        ary << hash
+      end
+      
+      return ary
     end
   end
 end

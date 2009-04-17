@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 
-describe ActiveSemantic do
+describe SemanticRecord do
 
   it do
-    ActiveSemantic::Base.should_not respond_to("construct_attributes")
+    SemanticRecord::Base.should_not respond_to("construct_attributes")
   end
   
 end
@@ -57,13 +57,37 @@ describe Genre do
     Genre.stub!(:attributes).and_return({ "http://example.org/music#neuesProp" => "http://www.w3.org/2001/XMLSchema#string",
                                           "http://example.org/music/altesProp" => "http://www.w3.org/2001/XMLSchema#string"})
     
-    Genre.attributes.to_optional_clause.should eql("?instance <http://example.org/music/altesProp> ?altesProp; <http://example.org/music#neuesProp> ?neuesProp")
+    Genre.attributes.to_optional_clause.should eql("OPTIONAL { ?uri <http://example.org/music/altesProp> ?altesProp. } OPTIONAL { ?uri <http://example.org/music#neuesProp> ?neuesProp. }")
   end
 
   it "should have an empty optional properties clause" do
     Genre.stub!(:attributes).and_return({})
     
     Genre.attributes.to_optional_clause.should eql("")    
+  end
+  
+  it "should have methods called artist,neuesProp,name " do
+    t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Rock\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
+    Genre.stub!(:query).and_return(t) 
+    genres = Genre.find("bla")
+    
+    genres[0].should respond_to("artist","neuesProp","name","artist=","neuesProp=","name=")
+    genres[1].should respond_to("artist","neuesProp","name","artist=","neuesProp=","name=")    
+  end
+  
+  it "should return an array of objects" do   
+    t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Rock\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
+    Genre.stub!(:query).and_return(t) 
+    genres = Genre.find("bla")
+    
+    genres.size.should ==(2)
+    genres.should be_an_instance_of(Array)
+  #  raise genres[0].methods.inspect
+    genres[0].should be_an_instance_of(Genre)
+    genres[0].instance_type.should eql("http://example.org/music#Funk")
+    genres[1].should be_an_instance_of(Genre)
+    genres[1].instance_type.should eql("http://example.org/music#Rock")
+
   end
   
 end

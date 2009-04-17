@@ -1,8 +1,10 @@
-module ActiveSemantic
+module SemanticRecord
   module SesameAdapter
     require "ruby-sesame"
     
     def self.append_features(someClass)
+      
+      attr_accessor :repository, :location
       
       @@prefixes = ["PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
                     "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
@@ -23,7 +25,7 @@ module ActiveSemantic
   
   ###  
   ##
-  # FIXME use below directive to extend ActiveSemantic::Base
+  # FIXME use below directive to extend SemanticRecord::Base
   
   # def self.included(receiver)
   #   receiver.extend         ClassMethods
