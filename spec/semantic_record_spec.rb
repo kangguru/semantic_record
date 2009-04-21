@@ -11,7 +11,7 @@ end
 
 describe Genre do
   it "should respond to various methods" do
-    Genre.should respond_to("construct_attributes","query","find")
+    Genre.should respond_to("construct_attributes","query","find","find_by_artist")
   end
   
   it "should have a base_uri" do
@@ -94,20 +94,27 @@ describe Genre do
     rock.first.uri.should eql("http://example.org/music#Rock")
   end
   
-  it "should return first or last" do
+  
+  
+  it "should find Jazz by Jon" do
+    g = Genre.find_by_artist("Jon")
     
+    g.first.uri.should eql("http://example.org/music#Jazz")
   end
-  
-  
+    
   it "should have exact 1 instance of genre with uri http://example.org/music#Jazz" do
     t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}]\n\t}\n}"
     Genre.stub!(:query).and_return(t)
 
     jazz = Genre.find("http://example.org/music#Funk")
-#    raise jazz.inspect
     jazz.size.should ==(1)
     jazz[0].should be_an_instance_of(Genre)
     jazz[0].uri.should eql("http://example.org/music#Funk")
+  end
+
+  it "should raise an ArgumentError if invalid symbol" do
+    lambda {Genre.find(:test)}.should raise_error(ArgumentError)
+    
   end
 
   it "should raise an MALFORMED QUERY exception if uri is invalid" do
