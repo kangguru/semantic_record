@@ -69,7 +69,7 @@ describe Genre do
   it "should have methods called artist,neuesProp,name " do
     t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Rock\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
     Genre.stub!(:query).and_return(t) 
-    genres = Genre.find("bla")
+    genres = Genre.find(:all)
     
     genres[0].should respond_to("artist","neuesProp","name","artist=","neuesProp=","name=")
     genres[1].should respond_to("artist","neuesProp","name","artist=","neuesProp=","name=")    
@@ -78,7 +78,7 @@ describe Genre do
   it "should return an array of objects" do   
     t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Rock\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
     Genre.stub!(:query).and_return(t) 
-    genres = Genre.find("bla")
+    genres = Genre.find(:all)
     
     genres.size.should ==(2)
     genres.should be_an_instance_of(Array)
@@ -86,7 +86,32 @@ describe Genre do
     genres[0].uri.should eql("http://example.org/music#Funk")
     genres[1].should be_an_instance_of(Genre)
     genres[1].uri.should eql("http://example.org/music#Rock")
+    
+    funk = Genre.find(:first)
+    funk.first.uri.should eql("http://example.org/music#Funk")
+    
+    rock = Genre.find(:last)
+    rock.first.uri.should eql("http://example.org/music#Rock")
+  end
+  
+  it "should return first or last" do
+    
+  end
+  
+  
+  it "should have exact 1 instance of genre with uri http://example.org/music#Jazz" do
+    t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}]\n\t}\n}"
+    Genre.stub!(:query).and_return(t)
 
+    jazz = Genre.find("http://example.org/music#Funk")
+#    raise jazz.inspect
+    jazz.size.should ==(1)
+    jazz[0].should be_an_instance_of(Genre)
+    jazz[0].uri.should eql("http://example.org/music#Funk")
+  end
+
+  it "should raise an MALFORMED QUERY exception if uri is invalid" do
+#    lambda {Genre.find('invalid')}.should raise(RubySesame::SesameException)
   end
   
 end

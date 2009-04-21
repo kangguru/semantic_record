@@ -4,6 +4,16 @@ module SemanticRecord
       def to_sparql_properties
         self.size > 0 ? "?#{self.join(' ?')}" : ""
       end
+      
+      def first!
+        a = self.first
+        self.clear << a
+      end
+      
+      def last!
+        a = self.last
+        self.clear << a
+      end
     end
     
     Hash.class_eval do

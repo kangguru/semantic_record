@@ -33,16 +33,30 @@ module SemanticRecord
       end
 
       def subClass.find(uri_or_scope)
-        instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
+        if uri_or_scope.kind_of?(Symbol)          
+          instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
+          case uri_or_scope
+           when :all
+             instances_result = instances_result
+           when :first
+             instances_result.first!
+           when :last
+             instances_result.last!
+           else raise ArgumentError
+          end
+        elsif uri_or_scope.kind_of?(String)
+          # TODO 
+          uri_to_search = URI.parse(uri_or_scope)
+          instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
+        end
         
         returning [] do |instances|        
           instances_result.each {|k|
             instances << new(k)
           }        
         end
+        
       end
-
-      
 
       def subClass.attributes_names
         attributes.keys.collect {|key|
@@ -58,10 +72,15 @@ module SemanticRecord
       subClass.construct_methods
     end
     
-    def initialize(values={})      
+    def attributes=(values)
       values.each do |key,value|
         self.send(key.to_s + "=",value)
-      end
+      end      
     end
+    
+    def initialize(values={})      
+      self.attributes= values
+    end
+  
   end
 end
