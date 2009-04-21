@@ -13,7 +13,7 @@ module SemanticRecord
         attr_accessor :rdf_type, :attributes, :base_uri, :attributes_names
       end
       
-      attr_accessor :instance_type
+      attr_accessor :uri
       
       subClass.base_uri="http://example.org/music#"
       subClass.rdf_type = subClass.name#.split("::").last.to_s
@@ -33,13 +33,13 @@ module SemanticRecord
       end
 
       def subClass.find(uri_or_scope)
-        instances = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
-        bla = []
-        instances.each {|k|
-          bla << new()
-        }
+        instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
         
-        return bla
+        returning [] do |instances|        
+          instances_result.each {|k|
+            instances << new(k)
+          }        
+        end
       end
 
       
@@ -58,12 +58,10 @@ module SemanticRecord
       subClass.construct_methods
     end
     
-    def initialize(values={})
-      self.instance_type = "bla"
-   #   values.each {|k,v|
-#        raise k.inspect
-      #   self.se=v
-      # }
+    def initialize(values={})      
+      values.each do |key,value|
+        self.send(key.to_s + "=",value)
+      end
     end
   end
 end

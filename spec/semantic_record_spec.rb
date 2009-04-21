@@ -82,11 +82,10 @@ describe Genre do
     
     genres.size.should ==(2)
     genres.should be_an_instance_of(Array)
-  #  raise genres[0].methods.inspect
     genres[0].should be_an_instance_of(Genre)
-    genres[0].instance_type.should eql("http://example.org/music#Funk")
+    genres[0].uri.should eql("http://example.org/music#Funk")
     genres[1].should be_an_instance_of(Genre)
-    genres[1].instance_type.should eql("http://example.org/music#Rock")
+    genres[1].uri.should eql("http://example.org/music#Rock")
 
   end
   

@@ -17,16 +17,17 @@ describe SemanticRecord::ResultParserJson do
   end
   
   it "should description" do
-    t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"instance\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"instance\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Jazz\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"instance\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Pop\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
+    t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"instance\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Jazz\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"instance\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Pop\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
     pop = {"name"=>"poppig"}
     jazz = {"artist"=>"Jon", "neuesProp"=>"test"}
     result = SemanticRecord::ResultParserJson.parse(t)
     
-    result.should include("http://example.org/music#Pop")
-    result.should include("http://example.org/music#Jazz")
+    result.first.should include("uri","artist","neuesProp")
+    result.first.should_not include("uri=")
+ #  result.first.should include("http://example.org/music#Jazz")
     
         
-    result["http://example.org/music#Pop"].should ==(pop)
-    result["http://example.org/music#Jazz"].should ==(jazz)
+ #  result["http://example.org/music#Pop"].should ==(pop)
+ #  result["http://example.org/music#Jazz"].should ==(jazz)
   end
 end
