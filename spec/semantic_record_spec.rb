@@ -123,4 +123,13 @@ describe Genre do
     lambda {Genre.find('invalid')}.should raise_error(RubySesame::SesameException)
   end
   
+  # it "should description" do
+  #   g = Genre.find(:first)[0]
+  #   g.artist="John Doo"
+  #   g.save
+  #   
+  #   g = Genre.find(:first)[0]
+  #   g.artist.should eql("John Doo")
+  # end
+  
 end

@@ -81,6 +81,21 @@ module SemanticRecord
       subClass.construct_methods
     end
     
+    def save
+      triple = []
+        self.class.attributes.keys.each do |key|
+          value = self.send(key.to_human_name)
+          triple << "<#{uri}> <#{key}> \"#{value}\" " unless value.blank?
+        end
+      
+      triple.delete_at(0)
+      SemanticRecord::Base.update(triple)
+    end
+    
+    def attributes_uri
+      
+    end
+    
     def attributes=(values)
       values.each do |key,value|
           self.send(key.to_s + "=",value)
