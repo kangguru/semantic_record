@@ -94,7 +94,10 @@ describe Genre do
     rock.first.uri.should eql("http://example.org/music#Rock")
   end
   
-  
+  it "should raise an error if massasignment with unknown attribute" do
+    house = Genre.new
+    lambda { house.attributes={'invalid_accessor'=>'drum party'} }.should raise_error(NoMethodError)
+  end
   
   it "should find Jazz by Jon" do
     g = Genre.find_by_artist("Jon")
@@ -113,12 +116,11 @@ describe Genre do
   end
 
   it "should raise an ArgumentError if invalid symbol" do
-    lambda {Genre.find(:test)}.should raise_error(ArgumentError)
-    
+    lambda {Genre.find(:test)}.should raise_error(ArgumentError)    
   end
 
   it "should raise an MALFORMED QUERY exception if uri is invalid" do
-#    lambda {Genre.find('invalid')}.should raise(RubySesame::SesameException)
+    lambda {Genre.find('invalid')}.should raise_error(RubySesame::SesameException)
   end
   
 end

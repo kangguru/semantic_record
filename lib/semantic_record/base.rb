@@ -1,5 +1,3 @@
-#require "ruby-sesame"
-
 module SemanticRecord
   class Base
     include SesameAdapter
@@ -30,8 +28,7 @@ module SemanticRecord
         attributes.each do |key,value|
           self.class_eval("def self.find_by_#{key.to_human_name} (val)
            instances_result = ResultParserJson.parse(self.query(\"SELECT ?uri WHERE {?uri <#{key}> '\#{val}' } \"))
-           build(instances_result) end
-          ") 
+           build(instances_result) end") 
         end
       end 
 
@@ -50,7 +47,7 @@ module SemanticRecord
              instances_result.first!
            when :last
              instances_result.last!
-           else raise ArgumentError, "bla"
+           else raise ArgumentError, "Not knowing this access symbol!"
           end
         elsif uri_or_scope.kind_of?(String)
           # TODO 
@@ -86,7 +83,7 @@ module SemanticRecord
     
     def attributes=(values)
       values.each do |key,value|
-        self.send(key.to_s + "=",value)
+          self.send(key.to_s + "=",value)
       end      
     end
     

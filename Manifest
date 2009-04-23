@@ -5,9 +5,9 @@ lib/semantic_record/support.rb
 lib/semantic_record.rb
 Manifest
 Rakefile
-spec/helper.rb
+script/console
 spec/result_parser_json_spec.rb
-spec/rspec_autotest.rb
 spec/semantic_record_spec.rb
 spec/spec.opts
 spec/spec_helper.rb
+spec/support_spec.rb

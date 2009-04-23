@@ -1,6 +1,15 @@
-require 'activesupport'
+require 'active_support'
 
-require 'lib/semantic_record/support'
-require 'lib/semantic_record/result_parser_json'
-require 'lib/semantic_record/sesame_adapter'
-require 'lib/semantic_record/base'
+begin
+  require 'semantic_record/support'
+rescue LoadError
+  support_path = "#{File.dirname(__FILE__)}/../../semantic_record/lib"
+  if File.directory?(support_path)
+    $:.unshift support_path
+    require 'semantic_record/support'
+  end
+end
+
+require 'semantic_record/result_parser_json'
+require 'semantic_record/sesame_adapter'
+require 'semantic_record/base'

@@ -3,7 +3,7 @@ require 'lib/semantic_record'
 require 'spec/rake/spectask'
 require 'echoe'
 
-Echoe.new('semantic_record', '0.0.5') do |p|
+Echoe.new('semantic_record', '0.0.9') do |p|
   p.description    = "use sesame as backend"
   p.url            = "http://"
   p.author         = "LB"
