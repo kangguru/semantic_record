@@ -3,7 +3,7 @@ module SemanticRecord
   module Support
     Array.class_eval do
       
-      # Extents *Array* with a method that takes every Array-element and adds a *?* -> for Sparql
+      # Extents *Array* with a method that takes every Array-element and adds a *?* at the beginning of every element  -> for Sparql
       def to_sparql_properties
         self.size > 0 ? "?#{self.join(' ?')}" : ""
       end
