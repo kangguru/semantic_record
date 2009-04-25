@@ -14,6 +14,10 @@ describe Genre do
     Genre.should respond_to("construct_attributes","query","find","find_by_artist")
   end
   
+  it "should not respond to unknown methods" do
+    Genre.should_not respond_to("const")
+  end
+  
   it "should have a base_uri" do
     Genre.base_uri.should eql("http://example.org/music#")
   end
@@ -101,8 +105,12 @@ describe Genre do
   
   it "should find Jazz by Jon" do
     g = Genre.find_by_artist("Jon")
-    
     g.first.uri.should eql("http://example.org/music#Jazz")
+  end
+  
+  it "should not raise an error, if nothing is found" do
+    g = Genre.find_by_artist("Jonny").first
+    g.should be nil
   end
     
   it "should have exact 1 instance of genre with uri http://example.org/music#Jazz" do
@@ -120,7 +128,7 @@ describe Genre do
   end
 
   it "should raise an MALFORMED QUERY exception if uri is invalid" do
-    lambda {Genre.find('invalid')}.should raise_error(RubySesame::SesameException)
+  #  lambda {Genre.find('invalid')}.should raise_error(RubySesame::SesameException)
   end
   
   # it "should description" do

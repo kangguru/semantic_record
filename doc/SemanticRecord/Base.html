@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+	<title>Class: SemanticRecord::Base</title>
+
+	<link rel="stylesheet" href="../rdoc.css" type="text/css" media="screen" />
+
+	<script src="../js/jquery.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/thickbox-compressed.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/quicksearch.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/darkfish.js" type="text/javascript"
+		charset="utf-8"></script>
+
+</head>
+<body class="class">
+
+	<div id="metadata">
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li><a href="../lib/semantic_record/base_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+							class="thickbox" title="lib/semantic_record/base.rb">lib/semantic_record/base.rb</a></li>
+					
+					</ul>
+				</div>
+			</div>
+
+			
+		</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link">Object</p>
+				
+			</div>
+			
+
+			<!-- Namespace Contents -->
+			
+
+			<!-- Method Quickref -->
+			
+			<div id="method-list-section" class="section">
+				<h3 class="section-header">Methods</h3>
+				<ul class="link-list">
+					
+					<li><a href="#M000000">::inherited</a></li>
+					
+					<li><a href="#M000012">::new</a></li>
+					
+					<li><a href="#M000011">#attributes=</a></li>
+					
+					<li><a href="#M000010">#attributes_uri</a></li>
+					
+					<li><a href="#M000009">#save</a></li>
+					
+				</ul>
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+			<div id="includes-section" class="section">
+				<h3 class="section-header">Included Modules</h3>
+				<ul class="link-list">
+				
+				
+					<li><a class="include" href="SesameAdapter.html">SemanticRecord::SesameAdapter</a></li>
+				
+				
+				</ul>
+			</div>
+			
+		</div>
+
+		<div id="project-metadata">
+			
+			
+			<div id="fileindex-section" class="section project-section">
+				<h3 class="section-header">Files</h3>
+				<ul>
+				
+					<li class="file"><a href="../Manifest.html">Manifest</a></li>
+				
+					<li class="file"><a href="../Rakefile.html">Rakefile</a></li>
+				
+					<li class="file"><a href="../spec/spec_opts.html">spec.opts</a></li>
+				
+				</ul>
+			</div>
+			
+
+			<div id="classindex-section" class="section project-section">
+				<h3 class="section-header">Class Index
+					<span class="search-toggle"><img src="../images/find.png"
+						height="16" width="16" alt="[+]"
+						title="show/hide quicksearch" /></span></h3>
+				<form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+				<fieldset>
+					<legend>Quicksearch</legend>
+					<input type="text" name="quicksearch" value=""
+						class="quicksearch-field" />
+				</fieldset>
+				</form>
+
+				<ul class="link-list">
+				
+					<li><a href="../SemanticRecord.html">SemanticRecord</a></li>
+				
+					<li><a href="../SemanticRecord/Base.html">SemanticRecord::Base</a></li>
+				
+					<li><a href="../SemanticRecord/ResultParserJson.html">SemanticRecord::ResultParserJson</a></li>
+				
+					<li><a href="../SemanticRecord/SesameAdapter.html">SemanticRecord::SesameAdapter</a></li>
+				
+					<li><a href="../SemanticRecord/Support.html">SemanticRecord::Support</a></li>
+				
+					<li><a href="../Genre.html">Genre</a></li>
+				
+				</ul>
+				<div id="no-class-search-results" style="display: none;">No matching classes.</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+	<div id="documentation">
+		<h1 class="class">SemanticRecord::Base</h1>
+
+		<div id="description">
+			
+		</div>
+
+		<!-- Constants -->
+		
+
+		<!-- Attributes -->
+		
+		<div id="attribute-method-details" class="method-section section">
+			<h3 class="section-header">Attributes</h3>
+
+			
+			<div id="rdf-type-attribute-method" class="method-detail">
+				<a name="rdf_type"></a>
+				
+				<a name="rdf_type="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">rdf_type</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p class="missing-docs">(Not documented)</p>
+				
+				</div>
+			</div>
+			
+			<div id="attributes-attribute-method" class="method-detail">
+				<a name="attributes"></a>
+				
+				<a name="attributes="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">attributes</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p class="missing-docs">(Not documented)</p>
+				
+				</div>
+			</div>
+			
+			<div id="base-uri-attribute-method" class="method-detail">
+				<a name="base_uri"></a>
+				
+				<a name="base_uri="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">base_uri</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p class="missing-docs">(Not documented)</p>
+				
+				</div>
+			</div>
+			
+			<div id="attributes-names-attribute-method" class="method-detail">
+				<a name="attributes_names"></a>
+				
+				<a name="attributes_names="></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">attributes_names</span><span
+						class="attribute-access-type">[RW]</span>
+				</div>
+
+				<div class="method-description">
+				
+				<p class="missing-docs">(Not documented)</p>
+				
+				</div>
+			</div>
+			
+		</div>
+		
+
+		<!-- Methods -->
+		
+		<div id="public-class-method-details" class="method-section section">
+			<h3 class="section-header">Public Class Methods</h3>
+
+		
+			<div id="inherited-method" class="method-detail ">
+				<a name="M000000"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">inherited</span><span
+						class="method-args">(subClass)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p class="missing-docs">(Not documented)</p>
+					
+
+					
+					<div class="method-source-code"
+						id="inherited-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/semantic_record/base.rb, line 5</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-constant">Base</span>.<span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subClass</span>)
+
+      <span class="ruby-comment cmt">###</span>
+      <span class="ruby-comment cmt">### attribute accessors that are independet from superclass</span>
+      <span class="ruby-comment cmt">###</span>
+      <span class="ruby-keyword kw">class</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword kw">self</span>
+        <span class="ruby-identifier">attr_accessor</span> <span class="ruby-identifier">:rdf_type</span>, <span class="ruby-identifier">:attributes</span>, <span class="ruby-identifier">:base_uri</span>, <span class="ruby-identifier">:attributes_names</span>
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-identifier">attr_accessor</span> <span class="ruby-identifier">:uri</span>
+      
+      <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">base_uri</span>=<span class="ruby-value str">&quot;http://example.org/music#&quot;</span>
+      <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">rdf_type</span> = <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">name</span><span class="ruby-comment cmt">#.split(&quot;::&quot;).last.to_s</span>
+      <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">attributes</span> = {}
+
+
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">construct_attributes</span>
+        <span class="ruby-comment cmt"># TODO was ist wenn Namen kollidieren</span>
+        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">attributes</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">attributes_names</span> = <span class="ruby-constant">ResultParserJson</span>.<span class="ruby-identifier">hash_values</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;SELECT DISTINCT ?property_name ?property_type WHERE { { ?property_name rdfs:domain &lt;#{uri}&gt;  } UNION {?s rdf:type &lt;#{uri}&gt;; ?property_name ?o. } OPTIONAL { ?property_name rdfs:range ?property_type.}  }&quot;</span>))
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">construct_methods</span>
+        <span class="ruby-identifier">attr_accessor</span> <span class="ruby-operator">*</span>(<span class="ruby-identifier">attributes_names</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">attributes_names</span>.<span class="ruby-identifier">empty?</span>        
+        
+        <span class="ruby-identifier">attributes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>,<span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_eval</span>(<span class="ruby-node">&quot;def self.find_by_#{key.to_human_name} (val)
+           instances_result = ResultParserJson.parse(self.query(\&quot;SELECT ?uri WHERE {?uri &lt;#{key}&gt; '\#{val}' } \&quot;))
+           build(instances_result) end&quot;</span>) 
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span> 
+
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">uri</span>
+        <span class="ruby-comment cmt"># TODO change my name</span>
+        <span class="ruby-node">&quot;#{base_uri}#{rdf_type}&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-comment cmt">#Searches the triple Store with different options</span>
+      <span class="ruby-comment cmt"># 1. Scope</span>
+      <span class="ruby-comment cmt"># * [:all] -&gt; search for all Instances of a particular class</span>
+      <span class="ruby-comment cmt"># * [:first] -&gt; search for the first Instance of a particular class</span>
+      <span class="ruby-comment cmt"># * [:last] -&gt; search for the last Instance of a particular class</span>
+      <span class="ruby-comment cmt"># 2. Uri</span>
+      <span class="ruby-comment cmt"># * [uri] -&gt; searches for an instance with the given URI</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">uri_or_scope</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">uri_or_scope</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">Symbol</span>)          
+          <span class="ruby-identifier">instances_result</span> = <span class="ruby-constant">ResultParserJson</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type &lt;#{uri}&gt; #{attributes.to_optional_clause} }&quot;</span>) )
+          <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">uri_or_scope</span>
+           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:all</span>
+             <span class="ruby-identifier">instances_result</span> = <span class="ruby-identifier">instances_result</span>
+           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:first</span>
+             <span class="ruby-identifier">instances_result</span>.<span class="ruby-identifier">first!</span>
+           <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:last</span>
+             <span class="ruby-identifier">instances_result</span>.<span class="ruby-identifier">last!</span>
+           <span class="ruby-keyword kw">else</span> <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-value str">&quot;Not knowing this access symbol!&quot;</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">uri_or_scope</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">String</span>)
+          <span class="ruby-comment cmt"># TODO </span>
+          <span class="ruby-identifier">uri_to_search</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">uri_or_scope</span>)
+          <span class="ruby-identifier">instances_result</span> = <span class="ruby-constant">ResultParserJson</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type &lt;#{uri}&gt; #{attributes.to_optional_clause} FILTER (?uri = &lt;#{uri_to_search.to_s}&gt;) }&quot;</span>) )
+        <span class="ruby-keyword kw">end</span>
+        
+        <span class="ruby-identifier">build</span>(<span class="ruby-identifier">instances_result</span>)
+        
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">build</span>(<span class="ruby-identifier">instances_result</span>)
+        <span class="ruby-identifier">returning</span> [] <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">instances</span><span class="ruby-operator">|</span>        
+          <span class="ruby-identifier">instances_result</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">instances</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">new</span>(<span class="ruby-identifier">k</span>)
+          }        
+        <span class="ruby-keyword kw">end</span>        
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-comment cmt"># Generates an array with all attribute-names without their namespace</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">attributes_names</span>
+        <span class="ruby-identifier">attributes</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">collect</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">key</span>.<span class="ruby-identifier">to_human_name</span>
+        }
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-comment cmt">###</span>
+      <span class="ruby-comment cmt">### class initializer calls</span>
+      <span class="ruby-comment cmt">###</span>
+
+      <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">construct_attributes</span>
+      <span class="ruby-identifier">subClass</span>.<span class="ruby-identifier">construct_methods</span>
+    <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="new-method" class="method-detail ">
+				<a name="M000012"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">new</span><span
+						class="method-args">(values={})</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Creates a new Object with the attributes and their values in the
+values-Hash
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="new-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/semantic_record/base.rb, line 119</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">values</span>={})      
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">attributes</span>= <span class="ruby-identifier">values</span>
+    <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="public-instance-method-details" class="method-section section">
+			<h3 class="section-header">Public Instance Methods</h3>
+
+		
+			<div id="attributes--method" class="method-detail ">
+				<a name="M000011"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">attributes=</span><span
+						class="method-args">(values)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Sets all the Values for a Object
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="attributes--source">
+<pre>
+<span class="ruby-comment cmt"># File lib/semantic_record/base.rb, line 112</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attributes=</span>(<span class="ruby-identifier">values</span>)
+      <span class="ruby-identifier">values</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>,<span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;=&quot;</span>,<span class="ruby-identifier">value</span>)
+      <span class="ruby-keyword kw">end</span>      
+    <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="attributes-uri-method" class="method-detail ">
+				<a name="M000010"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">attributes_uri</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p class="missing-docs">(Not documented)</p>
+					
+
+					
+					<div class="method-source-code"
+						id="attributes-uri-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/semantic_record/base.rb, line 107</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attributes_uri</span>
+      
+    <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+			<div id="save-method" class="method-detail ">
+				<a name="M000009"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">save</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+FIXME Update statt alles löschen - Transaction Document
+</p>
+<pre>
+ Saves all attributes to the Sesame Triple Store
+</pre>
+					
+
+					
+					<div class="method-source-code"
+						id="save-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/semantic_record/base.rb, line 95</span>
+    <span class="ruby-keyword kw">def</span>       <span class="ruby-identifier">save</span><span class="ruby-identifier">save</span><span class="ruby-identifier">save</span><span class="ruby-identifier">save</span><span class="ruby-identifier">save</span><span class="ruby-identifier">save</span><span class="ruby-identifier">save</span>
+      <span class="ruby-identifier">triple</span> = []
+        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">attributes</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">value</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>.<span class="ruby-identifier">to_human_name</span>)
+          <span class="ruby-identifier">triple</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;&lt;uri&gt;#{uri}&lt;/uri&gt; &lt;uri&gt;#{key}&lt;/uri&gt; &lt;literal&gt;#{value}&lt;/literal&gt; &quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">blank?</span>
+        <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-identifier">triple</span>.<span class="ruby-identifier">delete_at</span>(<span class="ruby-value">0</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-identifier">triple</span>.<span class="ruby-identifier">inspect</span>
+      <span class="ruby-constant">SemanticRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">triple</span>)
+    <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+			</div>
+
+		
+		</div>
+	
+
+	</div>
+
+
+	<div id="rdoc-debugging-section-dump" class="debugging-section">
+	
+		<p>Disabled; run with --debug to generate this.</p>
+	
+	</div>
+
+	<div id="validator-badges">
+		<p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+		<p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+			Rdoc Generator</a> 1.1.6</small>.</p>
+	</div>
+
+</body>
+</html>
+

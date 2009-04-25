@@ -17,6 +17,7 @@ module SemanticRecord
       subClass.rdf_type = subClass.name#.split("::").last.to_s
       subClass.attributes = {}
 
+
       def subClass.construct_attributes
         # TODO was ist wenn Namen kollidieren
         self.attributes, self.attributes_names = ResultParserJson.hash_values(self.query("SELECT DISTINCT ?property_name ?property_type WHERE { { ?property_name rdfs:domain <#{uri}>  } UNION {?s rdf:type <#{uri}>; ?property_name ?o. } OPTIONAL { ?property_name rdfs:range ?property_type.}  }"))
@@ -36,7 +37,14 @@ module SemanticRecord
         # TODO change my name
         "#{base_uri}#{rdf_type}"
       end
-            
+      
+      #Searches the triple Store with different options
+      # 1. Scope
+      # * [:all] -> search for all Instances of a particular class
+      # * [:first] -> search for the first Instance of a particular class
+      # * [:last] -> search for the last Instance of a particular class
+      # 2. Uri
+      # * [uri] -> searches for an instance with the given URI
       def subClass.find(uri_or_scope)
         if uri_or_scope.kind_of?(Symbol)          
           instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
@@ -67,6 +75,7 @@ module SemanticRecord
         end        
       end
       
+      # Generates an array with all attribute-names without their namespace
       def subClass.attributes_names
         attributes.keys.collect {|key|
           key.to_human_name
@@ -81,14 +90,17 @@ module SemanticRecord
       subClass.construct_methods
     end
     
+    #FIXME Update statt alles löschen - Transaction Document
+    # Saves all attributes to the Sesame Triple Store
     def save
       triple = []
         self.class.attributes.keys.each do |key|
           value = self.send(key.to_human_name)
-          triple << "<#{uri}> <#{key}> \"#{value}\" " unless value.blank?
+          triple << "<uri>#{uri}</uri> <uri>#{key}</uri> <literal>#{value}</literal> " unless value.blank?
         end
       
       triple.delete_at(0)
+      raise triple.inspect
       SemanticRecord::Base.update(triple)
     end
     
@@ -96,12 +108,14 @@ module SemanticRecord
       
     end
     
+    # Sets all the Values for a Object
     def attributes=(values)
       values.each do |key,value|
           self.send(key.to_s + "=",value)
       end      
     end
     
+    # Creates a new Object with the attributes and their values in the values-Hash
     def initialize(values={})      
       self.attributes= values
     end

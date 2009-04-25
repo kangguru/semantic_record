@@ -14,8 +14,8 @@ module SemanticRecord
       
       # FIXME make repository and server accessable to outside
       def someClass.query(query)
-        server = RubySesame::Server.new("http://192.168.2.104:8080/openrdf-sesame")
-#        server = RubySesame::Server.new("http://mims03.gm.fh-koeln.de:8282/openrdf-sesame")
+#        server = RubySesame::Server.new("http://192.168.2.104:8080/openrdf-sesame")
+        server = RubySesame::Server.new("http://mims03.gm.fh-koeln.de:8282/openrdf-sesame")
         repository = server.repository("study-stash")
         repository.query(@@prefixes.join(" ") + " " + query)
       end
@@ -24,7 +24,7 @@ module SemanticRecord
         server = RubySesame::Server.new("http://192.168.2.104:8080/openrdf-sesame")
         repository = server.repository("study-stash")
 #        raise data.join(".").inspect
-        repository.update(data.join(".") +".", "text/rdf+n3")
+        repository.update(data.join(".") +".", "application/x-rdftransaction")
       end
       
     end    
