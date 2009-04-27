@@ -55,7 +55,7 @@ module SemanticRecord
              instances_result.first!
            when :last
              instances_result.last!
-           else raise ArgumentError, "Not knowing this access symbol!"
+           else raise ArgumentError, "Not knowing how to deal with this access symbol!"
           end
         elsif uri_or_scope.kind_of?(String)
           # TODO 
@@ -99,6 +99,7 @@ module SemanticRecord
           triple << "<uri>#{uri}</uri> <uri>#{key}</uri> <literal>#{value}</literal> " unless value.blank?
         end
       
+      # FIXME very dirty hack for precenting datatype properties
       triple.delete_at(0)
       raise triple.inspect
       SemanticRecord::Base.update(triple)

@@ -1,6 +1,44 @@
 module SemanticRecord
   # Extents Ruby-classes with some usefull methods
   module Support
+    Module.class_eval do
+      # replacement for the standard attr_accessor. extends it to behave like an versioning system, to keep track of old values after changes
+      def attr_accessor_with_versioning(*attributes)
+         # inspired from: http://www.archivum.info/comp.lang.ruby/2008-04/msg03767.html
+         attributes.each { |attribute|
+                   module_eval %{
+                           def #{attribute} (version = :actual)
+                             if version == :actual
+                               @#{attribute}
+                             elsif version == :old
+                               @#{attribute}_old
+                             else
+                               raise ArgumentError, "unkown access symbol"
+                             end
+                           end
+                           
+                           def set_#{attribute} (value, init = false)
+                             if init
+                               @#{attribute}_modified = nil
+                               @#{attribute}_old = nil
+                             end
+                             if @#{attribute}_modified == nil
+                                @#{attribute}_modified = 0
+                             elsif @#{attribute}_modified == 1
+                               @#{attribute}_old = @#{attribute}
+                             end
+                             @#{attribute} = value
+                             @#{attribute}_modified += 1
+                           end
+                           
+                           def #{attribute}= (value)
+                             set_#{attribute} value
+                           end
+                   }
+           }
+      end
+    end
+    
     Array.class_eval do
       
       # Extents *Array* with a method that takes every Array-element and adds a *?* at the beginning of every element  -> for Sparql
