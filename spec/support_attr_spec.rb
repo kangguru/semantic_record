@@ -45,5 +45,4 @@ end
 
 class Song  
   attr_accessor_with_versioning :name
-  
 end

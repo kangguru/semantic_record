@@ -13,6 +13,9 @@ module SemanticRecord
       
       attr_accessor :uri
       
+      subClass.location="http://localhost:8080/openrdf-sesame"  
+      subClass.repository="study-stash"
+      
       subClass.base_uri="http://example.org/music#"
       subClass.rdf_type = subClass.name#.split("::").last.to_s
       subClass.attributes = {}

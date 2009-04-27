@@ -11,7 +11,7 @@ end
 
 describe Genre do
   it "should respond to various methods" do
-    Genre.should respond_to("construct_attributes","query","find","find_by_artist")
+    Genre.should respond_to("construct_attributes","query","find","find_by_artist",'location=','repository=')
   end
   
   it "should not respond to unknown methods" do
@@ -110,7 +110,7 @@ describe Genre do
   
   it "should not raise an error, if nothing is found" do
     g = Genre.find_by_artist("Jonny").first
-    g.should be nil
+    g.should be_nil
   end
     
   it "should have exact 1 instance of genre with uri http://example.org/music#Jazz" do
