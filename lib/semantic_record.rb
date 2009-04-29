@@ -12,4 +12,5 @@ end
 
 require 'semantic_record/result_parser_json'
 require 'semantic_record/sesame_adapter'
+require 'semantic_record/transaction_factory'
 require 'semantic_record/base'
