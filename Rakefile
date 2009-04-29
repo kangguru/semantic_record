@@ -5,8 +5,8 @@ require 'echoe'
 
 Echoe.new('semantic_record', '0.0.9') do |p|
   p.description    = "use sesame as backend"
-  p.url            = "http://"
-  p.author         = "LB"
+  p.url            = "http://semanticrecord.aufnahme.com"
+  p.author         = "Lars Brillert"
   p.email          = "development@aufnahme.com"
   p.ignore_pattern = ["coverage/*", "pkg/*"]
   p.development_dependencies = []
@@ -25,5 +25,6 @@ Spec::Rake::SpecTask.new('coverage') do |t|
   t.rcov_opts = ["--exclude", "spec", "--exclude", "gems"]
   t.rcov = true
 end
+
 
 task :default => :spec

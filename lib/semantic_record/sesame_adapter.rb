@@ -12,21 +12,20 @@ module SemanticRecord
                     "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
 		                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
 		                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"]
-      
-      
-      # FIXME make repository and server accessable to outside
-      def someClass.query(query)
-#        server = RubySesame::Server.new("http://localhost:8080/openrdf-sesame")
+
+
+      # FIXME make repository and server accessable to outside      
+      def someClass.find_by_sparql(query)
         server = RubySesame::Server.new("#{location}")
         repository = server.repository("study-stash")
-        repository.query(@@prefixes.join(" ") + " " + query)
+        repository.query(@@prefixes.join(" ") + " " + query)        
       end
-      
+            
       def someClass.update(data)
-        server = RubySesame::Server.new("#{location}")
+        server = RubySesame::Server.new("http://localhost:8080/openrdf-sesame")
         repository = server.repository("study-stash")
 #        raise data.join(".").inspect
-        repository.update(data.join(".") +".", "application/x-rdftransaction")
+        repository.add!(data.to_s, "application/x-rdftransaction")
       end
       
     end    

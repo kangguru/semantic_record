@@ -23,15 +23,15 @@ module SemanticRecord
 
       def subClass.construct_attributes
         # TODO was ist wenn Namen kollidieren
-        self.attributes, self.attributes_names = ResultParserJson.hash_values(self.query("SELECT DISTINCT ?property_name ?property_type WHERE { { ?property_name rdfs:domain <#{uri}>  } UNION {?s rdf:type <#{uri}>; ?property_name ?o. } OPTIONAL { ?property_name rdfs:range ?property_type.}  }"))
+        self.attributes = ResultParserJson.hash_values(self.find_by_sparql("SELECT DISTINCT ?property_name ?property_type WHERE { { ?property_name rdfs:domain <#{uri}>  } UNION {?s rdf:type <#{uri}>; ?property_name ?o. } OPTIONAL { ?property_name rdfs:range ?property_type.}  }"))
       end
       
       def subClass.construct_methods
-        attr_accessor *(attributes_names) unless attributes_names.empty?        
+        attr_accessor_with_versioning *(attributes_names) unless attributes_names.empty?        
         
         attributes.each do |key,value|
           self.class_eval("def self.find_by_#{key.to_human_name} (val)
-           instances_result = ResultParserJson.parse(self.query(\"SELECT ?uri WHERE {?uri <#{key}> '\#{val}' } \"))
+           instances_result = ResultParserJson.parse(self.find_by_sparql(\"SELECT ?uri #{attributes_names.to_sparql_properties} WHERE {?uri <#{key}> '\#{val}' #{attributes.to_optional_clause} } \"))
            build(instances_result) end") 
         end
       end 
@@ -50,7 +50,7 @@ module SemanticRecord
       # * [uri] -> searches for an instance with the given URI
       def subClass.find(uri_or_scope)
         if uri_or_scope.kind_of?(Symbol)          
-          instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
+          instances_result = ResultParserJson.parse(self.find_by_sparql("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} }") )
           case uri_or_scope
            when :all
              instances_result = instances_result
@@ -61,9 +61,11 @@ module SemanticRecord
            else raise ArgumentError, "Not knowing how to deal with this access symbol!"
           end
         elsif uri_or_scope.kind_of?(String)
-          # TODO 
+          #--
+          # TODO non-uri handling
+          #++
           uri_to_search = URI.parse(uri_or_scope)
-          instances_result = ResultParserJson.parse(self.query("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
+          instances_result = ResultParserJson.parse(self.find_by_sparql("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
         end
         
         build(instances_result)
@@ -93,19 +95,24 @@ module SemanticRecord
       subClass.construct_methods
     end
     
-    #FIXME Update statt alles löschen - Transaction Document
+    #--
+    #FIXME perform a real update! implement instaniation of new resource
+    #++
     # Saves all attributes to the Sesame Triple Store
     def save
-      triple = []
-        self.class.attributes.keys.each do |key|
-          value = self.send(key.to_human_name)
-          triple << "<uri>#{uri}</uri> <uri>#{key}</uri> <literal>#{value}</literal> " unless value.blank?
-        end
+      transaction_doc = SemanticRecord::TransactionFactory.new
+      self.class.attributes.keys.each do |key|
+          value_new = self.send(key.to_human_name)
+          value = self.send(key.to_human_name,:old)
+          # TODO: 
+          transaction_doc.add_update_statement(uri,key,value,value_new) unless value.blank?
+#          triple << "<uri>#{uri}</uri> <uri>#{key}</uri> <literal>#{value}</literal> " unless value.blank?
+      end
       
-      # FIXME very dirty hack for precenting datatype properties
-      triple.delete_at(0)
-      raise triple.inspect
-      SemanticRecord::Base.update(triple)
+      # FIXME very dirty hack for preventing datatype properties
+#      triple.delete_at(0)
+#      raise triple.inspect
+      SemanticRecord::Base.update(transaction_doc)
     end
     
     def attributes_uri
