@@ -18,7 +18,7 @@ module SemanticRecord
   end
 
   module Base::InstanceMethods
-    attr_accessor :uri
+    attr_accessor_with_versioning :uri
 
     #--
     #FIXME perform a real update! implement instaniation of new resource
@@ -46,7 +46,7 @@ module SemanticRecord
     # Sets all the Values for a Object
     def attributes=(values)
       values.each do |key,value|
-        self.send(key.to_s + "=",value)
+        self.send(key.to_s + "=",SemanticRecord::Property.new( value['value'],value['type'] ))
       end      
     end
 

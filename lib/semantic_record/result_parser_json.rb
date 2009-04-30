@@ -16,12 +16,13 @@ module SemanticRecord
     
     def self.parse(json_document)
 #     ary = []
+#      raise json_document.inspect
       json_document = JSON.parse(json_document)
       returning [] do |ary|
         json_document['results']['bindings'].each do |binding|
           hash = {}
           binding.collect do |key|
-            hash.merge!({key[0] => key[1]['value']})
+            hash.merge!({key[0] => { 'value' => key[1]['value'],'type' => key[1]['type'] } })
           end
           ary << hash
         end

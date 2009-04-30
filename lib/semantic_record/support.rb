@@ -9,15 +9,16 @@ module SemanticRecord
                    module_eval %{
                            def #{attribute} (version = :actual)
                              if version == :actual
-                               @#{attribute}
+                               @#{attribute}.nil? ? nil : @#{attribute}.value
                              elsif version == :old
-                               @#{attribute}_old
+                               @#{attribute}_old.nil? ? nil : @#{attribute}_old.value
                              else
                                raise ArgumentError, "unkown access symbol"
                              end
                            end
                            
                            def set_#{attribute} (value, init = false)
+
                              if init
                                @#{attribute}_modified = nil
                                @#{attribute}_old = nil
@@ -27,7 +28,16 @@ module SemanticRecord
                              elsif @#{attribute}_modified == 1
                                @#{attribute}_old = @#{attribute}
                              end
-                             @#{attribute} = value
+                             
+                             if value.class.to_s == "String"
+                                  @#{attribute} = SemanticRecord::Property.new(value)
+                             elsif value.class.to_s == "URI"
+                                 @#{attribute} = SemanticRecord::Property.new(value,"uri")  
+                             elsif value.class.to_s == "SemanticRecord::Property"
+                                 @#{attribute} = value
+                             else
+                               raise ArgumentError
+                             end
                              @#{attribute}_modified += 1
                            end
                            

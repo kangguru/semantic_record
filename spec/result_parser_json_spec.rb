@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
+# FIXME: irbevcjrvkjerbkf neu machen!!!!
+
 describe SemanticRecord::ResultParserJson do
   
   it "should description" do
@@ -21,6 +23,8 @@ describe SemanticRecord::ResultParserJson do
     pop = {"name"=>"poppig"}
     jazz = {"artist"=>"Jon", "neuesProp"=>"test"}
     result = SemanticRecord::ResultParserJson.parse(t)
+    
+#    raise result.inspect
     
     result.first.should include("uri","artist","neuesProp")
     result.first.should_not include("uri=")
