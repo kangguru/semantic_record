@@ -3,8 +3,8 @@ module SemanticRecord
     include SesameAdapter
 
     def self.inherited(someClass)
-      someClass.extend(ClassMethods)
-      someClass.send(:include,InstanceMethods)
+      someClass.extend(Base::ClassMethods)
+      someClass.send(:include,Base::InstanceMethods)
 
       someClass.location="http://localhost:8080/openrdf-sesame"  
       someClass.repository="study-stash"
@@ -17,7 +17,7 @@ module SemanticRecord
     end
   end
 
-  module InstanceMethods
+  module Base::InstanceMethods
     attr_accessor :uri
 
     #--
@@ -56,7 +56,7 @@ module SemanticRecord
     end
   end
 
-  module ClassMethods
+  module Base::ClassMethods
     ###
     ### attribute accessors that are independet from superclass
     ###
