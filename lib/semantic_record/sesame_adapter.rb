@@ -14,13 +14,15 @@ module SemanticRecord
 		                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"]
 
 
-      # FIXME make repository and server accessable to outside      
+      # FIXME make repository and server accessable to outside   
+      #Send a Query to the Store   
       def someClass.find_by_sparql(query)
         server = RubySesame::Server.new("#{location}")
         repository = server.repository("study-stash")
         repository.query(@@prefixes.join(" ") + " " + query)        
       end
-            
+      
+      # updates data in the store      
       def someClass.update(data)
         server = RubySesame::Server.new("http://localhost:8080/openrdf-sesame")
         repository = server.repository("study-stash")

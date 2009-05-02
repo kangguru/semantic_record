@@ -7,14 +7,15 @@ module SemanticRecord
   URI_STATEMENT = "uri"
   LITERAL_STATEMENT = "literal"
   NULL = "null"
-  
+  # Builds a transaction document for updates in the store
   class TransactionFactory < REXML::Document
+    #Creates a new XML-file and adds a transaction statement
     def initialize
       super
       add_transaction_statement
     end
-    
 
+    # Add a Node calles transaction to the document
     def add_transaction_statement
       self.add( build_element( TRANSACTION_STATEMENT ) )
     end
@@ -23,7 +24,6 @@ module SemanticRecord
     # * s -> the subject to be removed
     # * p -> the predicate to be removed
     # * o -> the object to be removed
-    #
     def add_remove_statement(s, p, o)
       remove = build_element( REMOVE_STATEMENT )
       #--
@@ -52,6 +52,7 @@ module SemanticRecord
       self.root.add(add_state)
     end
     
+    # if theirs an update the old triple has to be deleted and the new values added to the store
     def add_update_statement(s, p, o, new_object)
       #--
       # TODO modify for applying changes that effect more than the object
@@ -62,6 +63,7 @@ module SemanticRecord
     
     protected
     
+    # creates a triple that could be added to the transaction document
     def build_triple(s, p, o)
       returning [] do |triple|
         [s,p,o].each do |resource|
@@ -79,6 +81,7 @@ module SemanticRecord
       end
     end    
     
+    # If the value of a object is *uri* then build a uri-node
     def build_uri_element(value)
       #--
       # TODO make me pretty
@@ -88,6 +91,7 @@ module SemanticRecord
       return b
     end
     
+    # If the value of an object ist a *literal* build a literal-node
     def build_literal_element(value)
       #--
       # TODO make me pretty
@@ -96,7 +100,7 @@ module SemanticRecord
       b.text=(value)
       return b
     end
-    
+    #Creates a new Node with the specific name
     def build_element(name)
       return REXML::Element.new(name)
     end

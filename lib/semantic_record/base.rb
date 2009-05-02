@@ -1,7 +1,7 @@
 module SemanticRecord
   class Base
     include SesameAdapter
-
+    #Defines the location of the Sesame Store. the repository and a base_uri
     def self.inherited(someClass)
       someClass.extend(Base::ClassMethods)
       someClass.send(:include,Base::InstanceMethods)
@@ -39,10 +39,6 @@ module SemanticRecord
       SemanticRecord::Base.update(transaction_doc)
     end
 
-    def attributes_uri
-
-    end
-
     # Sets all the Values for a Object
     def attributes=(values)
       values.each do |key,value|
@@ -62,12 +58,13 @@ module SemanticRecord
     ###
 
     attr_accessor :rdf_type, :attributes, :base_uri, :attributes_names
-
+    # Gets all the property names and their types from the Store and puts them in the attributes hash
     def construct_attributes
       # TODO was ist wenn Namen kollidieren
       self.attributes = ResultParserJson.hash_values(self.find_by_sparql("SELECT DISTINCT ?property_name ?property_type WHERE { { ?property_name rdfs:domain <#{uri}>  } UNION {?s rdf:type <#{uri}>; ?property_name ?o. } OPTIONAL { ?property_name rdfs:range ?property_type.}  }"))
     end
 
+    #Gets all instances with their attributes
     def construct_methods
       attr_accessor_with_versioning *(attributes_names) unless attributes_names.empty?        
 
@@ -117,6 +114,7 @@ module SemanticRecord
 
     end
 
+    #Creates new Objects from the desired class
     def build(instances_result)
       returning [] do |instances|        
         instances_result.each {|k|
