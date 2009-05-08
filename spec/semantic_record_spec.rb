@@ -10,6 +10,10 @@ describe SemanticRecord do
 end
 
 describe Genre do
+  # after(:each) do
+  #   @g.remove!("http://musicbrainz.org/tempo")
+  # end
+  
   it "should respond to various methods" do
     Genre.should_not respond_to("query")
     Genre.should respond_to("construct_attributes","find_by_sparql","find","find_by_artist",'location=','repository=')
@@ -134,7 +138,7 @@ describe Genre do
   #  lambda {Genre.find('invalid')}.should raise_error(RubySesame::SesameException)
   end
   
-  it "should description" do
+  it "should update and restore" do
     g = Genre.find(:first)[0]
     g.artist="John Doo"
     g.save
@@ -146,6 +150,17 @@ describe Genre do
 
     g = Genre.find_by_artist("Jon")[0]
     g.should_not be_nil
+  end
+  
+  it "should add a triple an extend the schema" do
+    @g = Genre.find(:first)[0]
+    @g.add!("http://musicbrainz.org/tempo","slow")
+    #
+    #raise @g.class.attributes.inspect
+    
+    @g.tempo.should eql("slow")
+    # drop this attribute, should be handled via after-directive     
+    @g.remove!("http://musicbrainz.org/tempo")
   end
   
 end

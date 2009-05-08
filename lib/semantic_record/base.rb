@@ -12,8 +12,7 @@ module SemanticRecord
       someClass.rdf_type = someClass.name#.split("::").last.to_s
       someClass.attributes = {}
 
-      someClass.construct_attributes
-      someClass.construct_methods      
+      someClass.construct
     end
   end
 
@@ -33,10 +32,24 @@ module SemanticRecord
         transaction_doc.add_update_statement(uri,key,value,value_new) unless value.blank?
       end
 
-      # FIXME very dirty hack for preventing datatype properties
-      #      triple.delete_at(0)
-      #      raise triple.inspect
       SemanticRecord::Base.update(transaction_doc)
+    end
+
+    def add!(p,o)
+      transaction_doc = SemanticRecord::TransactionFactory.new
+      transaction_doc.add_add_statement(uri,p,o)
+      
+      SemanticRecord::Base.update(transaction_doc)
+      self.class.construct
+      self.send(p.to_human_name + "=",o)
+    end
+
+    def remove!(p,o=nil)
+      transaction_doc = SemanticRecord::TransactionFactory.new
+      transaction_doc.add_remove_statement(uri,p,o)
+      
+      SemanticRecord::Base.update(transaction_doc)
+      self.class.construct      
     end
 
     # Sets all the Values for a Object
@@ -59,6 +72,11 @@ module SemanticRecord
 
     attr_accessor :rdf_type, :attributes, :base_uri, :attributes_names
     # Gets all the property names and their types from the Store and puts them in the attributes hash
+    def construct
+      construct_attributes
+      construct_methods
+    end
+    
     def construct_attributes
       # TODO was ist wenn Namen kollidieren
       self.attributes = ResultParserJson.hash_values(self.find_by_sparql("SELECT DISTINCT ?property_name ?property_type WHERE { { ?property_name rdfs:domain <#{uri}>  } UNION {?s rdf:type <#{uri}>; ?property_name ?o. } OPTIONAL { ?property_name rdfs:range ?property_type.}  }"))
