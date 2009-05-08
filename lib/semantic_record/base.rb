@@ -17,7 +17,7 @@ module SemanticRecord
   end
 
   module Base::InstanceMethods
-    attr_accessor_with_versioning :uri
+   # attr_accessor_with_versioning :uri
 
     #--
     #FIXME perform a real update! implement instaniation of new resource
@@ -34,17 +34,22 @@ module SemanticRecord
 
       SemanticRecord::Base.update(transaction_doc)
     end
-
+      
+    #Adds the given p(roperty) and o(object) to the actucal instance/subject  
     def add!(p,o)
       transaction_doc = SemanticRecord::TransactionFactory.new
       transaction_doc.add_add_statement(uri,p,o)
       
       SemanticRecord::Base.update(transaction_doc)
+      # make the schema changes available
       self.class.construct
+      # update the instance
       self.send(p.to_human_name + "=",o)
     end
-
+    
+    # remove the given triple from the store, o can be set to a specific value
     def remove!(p,o=nil)
+      # TODO perhaps this should be moved to the property class -> jazz.composer.destory!
       transaction_doc = SemanticRecord::TransactionFactory.new
       transaction_doc.add_remove_statement(uri,p,o)
       
@@ -84,7 +89,48 @@ module SemanticRecord
 
     #Gets all instances with their attributes
     def construct_methods
-      attr_accessor_with_versioning *(attributes_names) unless attributes_names.empty?        
+      #attr_accessor_with_versioning *(attributes_names) unless attributes_names.empty?        
+      [:uri,attributes_names].flatten.each do |attribute|
+        class_eval %{
+          def #{attribute} (version = :actual)
+             if version == :actual
+               @#{attribute}.nil? ? nil : @#{attribute}.value
+             elsif version == :old
+               @#{attribute}_old.nil? ? nil : @#{attribute}_old.value
+             else
+               raise ArgumentError, "unkown access symbol"
+             end
+           end
+           
+           def set_#{attribute} (value, init = false)
+
+             if init
+               @#{attribute}_modified = nil
+               @#{attribute}_old = nil
+             end
+             if @#{attribute}_modified == nil
+                @#{attribute}_modified = 0
+             elsif @#{attribute}_modified == 1
+               @#{attribute}_old = @#{attribute}
+             end
+             
+             if value.class.to_s == "String"
+                  @#{attribute} = SemanticRecord::Property.new(value)
+             elsif value.class.to_s == "URI"
+                 @#{attribute} = SemanticRecord::Property.new(value,"uri")  
+             elsif value.class.to_s == "SemanticRecord::Property"
+                 @#{attribute} = value
+             else
+               raise ArgumentError
+             end
+             @#{attribute}_modified += 1
+           end
+           
+           def #{attribute}= (value)
+             set_#{attribute} value
+           end
+        }
+      end
 
       attributes.each do |key,value|
         class_eval %{

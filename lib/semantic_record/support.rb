@@ -4,48 +4,38 @@ module SemanticRecord
     Module.class_eval do
       # replacement for the standard attr_accessor. extends it to behave like an versioning system, to keep track of old values after changes
       def attr_accessor_with_versioning(*attributes)
-         # inspired from: http://www.archivum.info/comp.lang.ruby/2008-04/msg03767.html
-         attributes.each { |attribute|
-                   module_eval %{
-                           def #{attribute} (version = :actual)
-                             if version == :actual
-                               @#{attribute}.nil? ? nil : @#{attribute}.value
-                             elsif version == :old
-                               @#{attribute}_old.nil? ? nil : @#{attribute}_old.value
-                             else
-                               raise ArgumentError, "unkown access symbol"
-                             end
-                           end
-                           
-                           def set_#{attribute} (value, init = false)
+        # inspired from: http://www.archivum.info/comp.lang.ruby/2008-04/msg03767.html
+        attributes.each { |attribute|
+          module_eval %{
+            def #{attribute} (version = :actual)
+              if version == :actual
+                @#{attribute}
+              elsif version == :old
+                @#{attribute}_old
+              else
+                raise ArgumentError, "unkown access symbol"
+              end
+            end
 
-                             if init
-                               @#{attribute}_modified = nil
-                               @#{attribute}_old = nil
-                             end
-                             if @#{attribute}_modified == nil
-                                @#{attribute}_modified = 0
-                             elsif @#{attribute}_modified == 1
-                               @#{attribute}_old = @#{attribute}
-                             end
-                             
-                             if value.class.to_s == "String"
-                                  @#{attribute} = SemanticRecord::Property.new(value)
-                             elsif value.class.to_s == "URI"
-                                 @#{attribute} = SemanticRecord::Property.new(value,"uri")  
-                             elsif value.class.to_s == "SemanticRecord::Property"
-                                 @#{attribute} = value
-                             else
-                               raise ArgumentError
-                             end
-                             @#{attribute}_modified += 1
-                           end
-                           
-                           def #{attribute}= (value)
-                             set_#{attribute} value
-                           end
-                   }
-           }
+            def set_#{attribute} (value, init = false)
+              if init
+                @#{attribute}_modified = nil
+                @#{attribute}_old = nil
+              end
+              if @#{attribute}_modified == nil
+                @#{attribute}_modified = 0
+              elsif @#{attribute}_modified == 1
+                @#{attribute}_old = @#{attribute}
+              end
+              @#{attribute} = value
+              @#{attribute}_modified += 1
+            end
+
+            def #{attribute}= (value)
+              set_#{attribute} value
+            end
+          }
+        }
       end
     end
     
