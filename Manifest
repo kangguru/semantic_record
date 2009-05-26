@@ -1,4 +1,5 @@
 lib/semantic_record/base.rb
+lib/semantic_record/property.rb
 lib/semantic_record/result_parser_json.rb
 lib/semantic_record/sesame_adapter.rb
 lib/semantic_record/support.rb

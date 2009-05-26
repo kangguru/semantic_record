@@ -5,13 +5,12 @@ module SemanticRecord
     def self.inherited(someClass)
       someClass.extend(Base::ClassMethods)
       someClass.send(:include,Base::InstanceMethods)
-
+      #someClass.send(:construct)
       someClass.location="http://localhost:8080/openrdf-sesame"  
       someClass.repository="study-stash"
-      someClass.base_uri="http://example.org/music#"
+      someClass.base_uri="http://knowledge.erco.com/products1212#"
       someClass.rdf_type = someClass.name#.split("::").last.to_s
       someClass.attributes = {}
-
       someClass.construct
     end
   end
@@ -75,7 +74,13 @@ module SemanticRecord
     ### attribute accessors that are independet from superclass
     ###
 
-    attr_accessor :rdf_type, :attributes, :base_uri, :attributes_names
+    attr_accessor :rdf_type, :attributes, :attributes_names
+    attr_reader :base_uri
+    
+    def base_uri=(value)
+      @base_uri = value
+      construct
+    end
     # Gets all the property names and their types from the Store and puts them in the attributes hash
     def construct
       construct_attributes

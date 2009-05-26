@@ -9,14 +9,31 @@ describe SemanticRecord do
   
 end
 
+describe Leuchte do
+    it "should respond to various methods" do
+      Leuchte.should_not respond_to("query")
+#      Leuchte.construct
+#      raise Leuchte.repository.inspect
+      #["hatEinbauart", "hatLeuchtmittel", "type", "hatAusstrahlwinkel", "hatMontageort"]
+      Leuchte.should respond_to("find_by_hatAusstrahlwinkel")
+      
+      g = Leuchte.find(:all).first
+#      raise g.hatAusstrahlwinkel.inspect
+      g.should respond_to("hatAusstrahlwinkel")
+    end
+end
+
 describe Genre do
   # after(:each) do
   #   @g.remove!("http://musicbrainz.org/tempo")
   # end
+
+  
+
   
   it "should respond to various methods" do
     Genre.should_not respond_to("query")
-    Genre.should respond_to("construct_attributes","find_by_sparql","find","find_by_artist",'location=','repository=')
+    Genre.should respond_to("construct_attributes","find_by_sparql","find","find_by_composer",'location=','repository=')
   end
   
   it "should not respond to unknown methods" do

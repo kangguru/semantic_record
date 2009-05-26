@@ -23,6 +23,10 @@ require 'spec'
 #require File.join(File.dirname(__FILE__), *%w[shared_ruby_sesame_spec])
 require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 
+class Leuchte < SemanticRecord::Base
+  self.base_uri = "http://knowledge.erco.com/products#"
+end
+
 
 class Genre < SemanticRecord::Base
   
