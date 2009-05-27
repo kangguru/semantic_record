@@ -5,35 +5,18 @@ describe SemanticRecord do
 
   it do
     SemanticRecord::Base.should_not respond_to("construct_attributes")
+    SemanticRecord::Base.should respond_to("construct_classes")
   end
   
 end
 
-describe Leuchte do
-    it "should respond to various methods" do
-      Leuchte.should_not respond_to("query")
-#      Leuchte.construct
-#      raise Leuchte.repository.inspect
-      #["hatEinbauart", "hatLeuchtmittel", "type", "hatAusstrahlwinkel", "hatMontageort"]
-      Leuchte.should respond_to("find_by_hatAusstrahlwinkel")
-      
-      g = Leuchte.find(:all).first
-#      raise g.hatAusstrahlwinkel.inspect
-      g.should respond_to("hatAusstrahlwinkel")
-    end
-end
-
 describe Genre do
-  # after(:each) do
+    # after(:each) do
   #   @g.remove!("http://musicbrainz.org/tempo")
   # end
-
-  
-
-  
-  it "should respond to various methods" do
+ it "should respond to various methods" do
     Genre.should_not respond_to("query")
-    Genre.should respond_to("construct_attributes","find_by_sparql","find","find_by_composer",'location=','repository=')
+    Genre.should respond_to("construct_attributes","find","find_by_composer")
   end
   
   it "should not respond to unknown methods" do
@@ -105,6 +88,7 @@ describe Genre do
     t = "{\n\t\"head\": {\n\t\t\"vars\": [ \"uri\", \"name\", \"neuesProp\", \"artist\" ]\n\t}, \n\t\"results\": {\n\t\t\"bindings\": [\n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Funk\" }, \n\t\t\t\t\"artist\": { \"type\": \"literal\", \"value\": \"Jon\" }, \n\t\t\t\t\"neuesProp\": { \"type\": \"literal\", \"value\": \"test\" }\n\t\t\t}, \n\t\t\t{\n\t\t\t\t\"uri\": { \"type\": \"uri\", \"value\": \"http:\\/\\/example.org\\/music#Rock\" }, \n\t\t\t\t\"name\": { \"type\": \"literal\", \"value\": \"poppig\" }\n\t\t\t}\n\t\t]\n\t}\n}"
     Genre.stub!(:find_by_sparql).and_return(t) 
     genres = Genre.find(:all)
+#    raise genres.
     
     genres.size.should ==(2)
     genres.should be_an_instance_of(Array)

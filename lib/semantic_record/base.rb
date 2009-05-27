@@ -1,18 +1,39 @@
 module SemanticRecord
+  
   class Base
-    include SesameAdapter
+#    include SesameAdapter
     #Defines the location of the Sesame Store. the repository and a base_uri
+    extend(SemanticRecord::SesameAdapter)
+    
     def self.inherited(someClass)
       someClass.extend(Base::ClassMethods)
       someClass.send(:include,Base::InstanceMethods)
-      #someClass.send(:construct)
-      someClass.location="http://localhost:8080/openrdf-sesame"  
-      someClass.repository="study-stash"
-      someClass.base_uri="http://knowledge.erco.com/products1212#"
+      someClass.base_uri = "http://knowledge.erco.com/products#"
       someClass.rdf_type = someClass.name#.split("::").last.to_s
       someClass.attributes = {}
       someClass.construct
     end
+    
+    def self.construct_classes
+      classes = ResultParserJson.hash_values(self.find_by_sparql("SELECT ?property_name ?property_type Where { ?property_name rdf:type owl:Class. FILTER (!isBlank(?property_name)) }"))
+      
+      
+      classes.keys.each do |key|
+#        raise key.inspect
+        klass_name = key.to_human_name.gsub('-','_').camelize
+        Object.class_eval %{
+          class #{klass_name} < SemanticRecord::Base
+            self.base_uri = "#{key.extract_base}#"
+          end
+        }
+      end
+    
+      #e = Emanon.new
+    
+    end
+
+    
+    
   end
 
   module Base::InstanceMethods
@@ -31,7 +52,7 @@ module SemanticRecord
         transaction_doc.add_update_statement(uri,key,value,value_new) unless value.blank?
       end
 
-      SemanticRecord::Base.update(transaction_doc)
+      self.class.update(transaction_doc)
     end
       
     #Adds the given p(roperty) and o(object) to the actucal instance/subject  
@@ -39,7 +60,7 @@ module SemanticRecord
       transaction_doc = SemanticRecord::TransactionFactory.new
       transaction_doc.add_add_statement(uri,p,o)
       
-      SemanticRecord::Base.update(transaction_doc)
+      self.class.update(transaction_doc)
       # make the schema changes available
       self.class.construct
       # update the instance
@@ -52,7 +73,7 @@ module SemanticRecord
       transaction_doc = SemanticRecord::TransactionFactory.new
       transaction_doc.add_remove_statement(uri,p,o)
       
-      SemanticRecord::Base.update(transaction_doc)
+      self.class.update(transaction_doc)
       self.class.construct      
     end
 
@@ -76,7 +97,7 @@ module SemanticRecord
 
     attr_accessor :rdf_type, :attributes, :attributes_names
     attr_reader :base_uri
-    
+        
     def base_uri=(value)
       @base_uri = value
       construct

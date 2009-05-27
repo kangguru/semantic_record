@@ -6,12 +6,14 @@ module SemanticRecord
       hash = {}     
       json_document = JSON.parse(json_document)
 
+      # mittelalter
       json_document['results']['bindings'].each do |binding|
         property_type = binding['property_type']['value'].to_s unless binding['property_type'].blank?
         property_name = binding['property_name']['value'].to_s
         hash[property_name] = property_type
       end
       
+      # neuzeit
       return hash
     end
     

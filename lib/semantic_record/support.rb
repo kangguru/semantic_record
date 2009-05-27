@@ -73,6 +73,10 @@ module SemanticRecord
       def to_human_name
         self.split('#').size > 1 ? self.split('#').last : self.split('/').last
       end
+      
+      def extract_base
+        self.split('#').first
+      end
     end
   end  
 end
