@@ -1,23 +1,3 @@
-# Ruby-Sesame: a Ruby library to interact with OpenRDF.org's Sesame RDF
-# framework via its REST interface.
-#
-# Copyright (C) 2008 Paul Legato (pjlegato at gmail dot com).
-#
-# This file is part of Ruby-Sesame.
-#
-# Ruby-Sesame is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ruby-Sesame is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ruby-Sesame.  If not, see <http://www.gnu.org/licenses/>.
-
 require 'rubygems'
 require 'spec'
 #require File.join(File.dirname(__FILE__), *%w[shared_ruby_sesame_spec])
@@ -27,9 +7,9 @@ require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "study-stash"})
 
 class Genre < SemanticRecord::Base
-  self.location = {:repo => "study-stash"}
   self.base_uri="http://example.org/music#"
 end
+
 class Leuchte < SemanticRecord::Base
   self.location = {:repo => "erco"}
   self.base_uri = "http://knowledge.erco.com/products#"
