@@ -7,7 +7,7 @@ module SemanticRecord
 	                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
 	                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"]
     @@site = nil
-    @@repository = "bla"
+    @@repository = "study-stash"
     
     def init(location)
        @@site = location[:uri]
@@ -45,13 +45,12 @@ module SemanticRecord
     end
  
     def repository
-      #unless site.nil?
+      unless site.nil? || repo.nil?
         server = RubySesame::Server.new(site)
-#        raise repo.inspect
         server.repository(repo)
-      #else
-      #  raise ArgumentError, "no repository and/or URI specified"
-      #end
+      else
+        raise ArgumentError, "no repository and/or URI specified"
+      end
     end
     
  
