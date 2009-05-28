@@ -110,8 +110,6 @@ describe Genre do
   end
   
   it "should find Jazz by Jon" do
-    # ugly hack, can't be right  
-    SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "study-stash"})    
     g = Genre.find_by_artist("Jon")
 #    raise g.inspect
     g.first.artist.should eql("Jon")
@@ -119,9 +117,6 @@ describe Genre do
   end
   
   it "should not raise an error, if nothing is found" do
-    # ugly hack, can't be right  
-    SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "study-stash"})    
-    
     g = Genre.find_by_artist("Jonny").first
     g.should be_nil
   end
@@ -145,9 +140,6 @@ describe Genre do
   end
   
   it "should update and restore" do
-    # ugly hack, can't be right  
-    SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "study-stash"})    
-    
     g = Genre.find(:first)[0]
     g.artist="John Doo"
     g.save
@@ -162,9 +154,6 @@ describe Genre do
   end
   
   it "should add a triple an extend the schema" do
-    # ugly hack, can't be right  
-    SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "study-stash"})    
-    
     @g = Genre.find(:first)[0]
     @g.add!("http://musicbrainz.org/tempo","slow")
     #

@@ -45,12 +45,12 @@ module SemanticRecord
     end
  
     def repository
-      unless site.nil? || repo.nil?
-        server = RubySesame::Server.new(site)
-        server.repository(repo)
-      else
-        raise ArgumentError, "no repository and/or URI specified"
-      end
+#      unless site.nil? || repo.nil?
+        server = RubySesame::Server.new("http://localhost:8080/openrdf-sesame")
+        server.repository("erco")
+ #     else
+  #      raise ArgumentError, "no repository and/or URI specified"
+   #   end
     end
     
  
