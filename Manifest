@@ -9,7 +9,9 @@ Manifest
 Rakefile
 script/console
 spec/result_parser_json_spec.rb
+spec/semantic_record_light_spec.rb
 spec/semantic_record_spec.rb
+spec/sesame_adapter_spec.rb
 spec/spec.opts
 spec/spec_helper.rb
 spec/support_attr_spec.rb

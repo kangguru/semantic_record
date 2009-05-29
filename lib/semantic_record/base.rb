@@ -37,6 +37,7 @@ module SemanticRecord
   end
 
   module Base::InstanceMethods
+    @attributes2 = []
    # attr_accessor_with_versioning :uri
 
     #--
@@ -79,9 +80,16 @@ module SemanticRecord
 
     # Sets all the Values for a Object
     def attributes=(values)
-      values.each do |key,value|
-        self.send(key.to_s + "=",SemanticRecord::Property.new( value['value'],value['type'] ))
-      end      
+      raise values.inspect
+      @attributes2 = values
+#       values.each do |key,value|
+#         @attributes << {key => {"value" => value['value'],"type" => value['type'] } }
+# #        self.send(key.to_s + "=",SemanticRecord::Property.new( value['value'],value['type'] ))
+#       end      
+    end
+    
+    def attributes2
+      @attributes2
     end
 
     # Creates a new Object with the attributes and their values in the values-Hash
@@ -120,7 +128,7 @@ module SemanticRecord
         class_eval %{
           def #{attribute} (version = :actual)
              if version == :actual
-               @#{attribute}.nil? ? nil : @#{attribute}.value
+               attributes2['#{attribute}']['value']
              elsif version == :old
                @#{attribute}_old.nil? ? nil : @#{attribute}_old.value
              else
@@ -199,7 +207,7 @@ module SemanticRecord
         uri_to_search = URI.parse(uri_or_scope)
         instances_result = ResultParserJson.parse(self.find_by_sparql("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
       end
-
+      raise instances_result.inspect
       build(instances_result)
 
     end

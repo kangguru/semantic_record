@@ -20,15 +20,26 @@ module SemanticRecord
     #Parses the result of a specific sparql-query that gets all instances and their attributes out of the store
     def self.parse(json_document)
       json_document = JSON.parse(json_document)
-      returning [] do |ary|
-        json_document['results']['bindings'].each do |binding|
-          hash = {}
-          binding.collect do |key|
-            hash.merge!({key[0] => { 'value' => key[1]['value'],'type' => key[1]['type'] } })
+      ary = {}
+#      returning [] do |ary|
+        json_document['head']['vars'].each do |var|
+          a = []
+          g = {var => {'type' => "",'value' => []} }
+          json_document['results']['bindings'].each do |binding|
+            g[var]['value'] << binding[var]['value']
+            g[var]['type'] = binding[var]['type']
+ #           a << {'type' => binding[var]['type'],'value' => }
           end
-          ary << hash
+          g[var]['value'] = g[var]['value'].uniq
+#          t = {var => a}
+          #raise t.inspect
+          ary.merge!(g)
         end
-      end
+#        raise ary.inspect
+        ary
+ #     end
+#      raise json_document.inspect
+#      json_document['results']['bindings']
     end
   end
 end

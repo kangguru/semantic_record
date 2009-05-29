@@ -1,14 +1,18 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "study-stash"})
-
 describe SemanticRecord::Base do
+  before(:each) do
+    SemanticRecord::Base.init({:uri => "http://localhost:8080/openrdf-sesame",:repo => "erco"})
+  end
+  
+
   it "should description" do
     SemanticRecord::Base.construct_classes
     
     g = Emanon.new
     
-    #raise Emanon.base_uri.inspect
+#    raise g.hatAusstrahlwinkel.inspect
+    g.should respond_to("hatAusstrahlwinkel")
   end
 end
 
@@ -19,6 +23,9 @@ describe Leuchte do
       Leuchte.should respond_to("find_by_hatAusstrahlwinkel")
 
       g = Leuchte.find(:all).first
+      
+#      raise g.hatAusstrahlwinkel.inspect
+      
       g.should respond_to("hatAusstrahlwinkel")
     end
 end

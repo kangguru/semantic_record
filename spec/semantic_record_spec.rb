@@ -11,9 +11,6 @@ describe SemanticRecord do
 end
 
 describe Genre do
-    # after(:each) do
-  #   @g.remove!("http://musicbrainz.org/tempo")
-  # end
  it "should respond to various methods" do
     Genre.should_not respond_to("query")
     Genre.should respond_to("construct_attributes","find","find_by_composer")
@@ -92,6 +89,8 @@ describe Genre do
     
     genres.size.should ==(2)
     genres.should be_an_instance_of(Array)
+    
+    
     genres[0].should be_an_instance_of(Genre)
     genres[0].uri.should eql("http://example.org/music#Funk")
     genres[1].should be_an_instance_of(Genre)
