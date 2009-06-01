@@ -16,10 +16,51 @@ module SemanticRecord
       # neuzeit
       return hash
     end
-    
+  
     #Parses the result of a specific sparql-query that gets all instances and their attributes out of the store
     def self.parse(json_document)
       json_document = JSON.parse(json_document)
+      return nil if json_document['results']['bindings'].eql? [] 
+      aktuell=start=json_document['results']['bindings'].first['uri']['value']
+      result=[]
+      values=Hash.new
+      initHash(json_document,values)
+      json_document['results']['bindings'].each do |binding|
+        if !(binding['uri']['value'].eql? aktuell)
+          uniqueHash values
+          result << values.clone
+          initHash(json_document,values)
+          aktuell = binding['uri']['value']
+        end 
+        binding.each do |b|
+           values[b[0]]['value']<<b[1]['value']
+           values[b[0]]['type']=b[1]['type']
+         end
+        end
+          uniqueHash values
+          result << values.clone
+        result
+    end
+    
+    def self.uniqueHash(hash)
+      hash.each do |key,value|
+        hash[key]['value']=hash[key]['value'].uniq
+      end
+      hash
+    end
+    
+    def self.initHash(doc,hash)
+      hash.clear
+      doc['head']['vars'].each do |var|
+        hash[var]={'value'=>[],'type'=>''}
+      end
+      hash
+    end
+    
+    #Parses the result of a specific sparql-query that gets all instances and their attributes out of the store
+    def self.parseOld(json_document)
+      json_document = JSON.parse(json_document)
+      raise json_document
       ary = {}
 #      returning [] do |ary|
         json_document['head']['vars'].each do |var|
@@ -28,18 +69,12 @@ module SemanticRecord
           json_document['results']['bindings'].each do |binding|
             g[var]['value'] << binding[var]['value']
             g[var]['type'] = binding[var]['type']
- #           a << {'type' => binding[var]['type'],'value' => }
           end
           g[var]['value'] = g[var]['value'].uniq
-#          t = {var => a}
-          #raise t.inspect
           ary.merge!(g)
         end
-#        raise ary.inspect
-        ary
- #     end
-#      raise json_document.inspect
-#      json_document['results']['bindings']
+        raise ary.inspect
+        result=[ary]
     end
   end
 end

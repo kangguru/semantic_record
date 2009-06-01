@@ -57,6 +57,7 @@ module SemanticRecord
       #--
       # TODO modify for applying changes that effect more than the object
       #++
+      raise "drin"
       add_remove_statement(s,p,o)
       add_add_statement(s,p,new_object)
     end

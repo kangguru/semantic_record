@@ -8,11 +8,8 @@ describe SemanticRecord::Base do
 
   it "should description" do
     SemanticRecord::Base.construct_classes
-    
-    g = Emanon.new
-    
-#    raise g.hatAusstrahlwinkel.inspect
-    g.should respond_to("hatAusstrahlwinkel")
+    g = Emanon.new    
+    g.should respond_to("has_ray_angle")
   end
 end
 
@@ -20,12 +17,20 @@ end
 describe Leuchte do
     it "should respond to methods specific to lights" do
       Leuchte.should_not respond_to("query")
-      Leuchte.should respond_to("find_by_hatAusstrahlwinkel")
-
-      g = Leuchte.find(:all).first
-      
-#      raise g.hatAusstrahlwinkel.inspect
-      
-      g.should respond_to("hatAusstrahlwinkel")
+      Leuchte.should respond_to("find_by_has_ray_angle")
+    end
+    
+    it "should respond to methods specific to instances of lights" do
+      g = Leuchte.find(:all)
+      g[1].should respond_to("has_ray_angle")
+      g[1].attributes['has_ray_angle']['type'].should eql('uri')
+      g[1].has_ray_angle.should be_an_instance_of(Array)
+      g[1].has_ray_angle.first.should eql("http://knowledge.erco.com/properties#flood")
+    end
+    
+    it "should set variables correctly" do
+      g = Leuchte.find(:first).first
+      g.has_ray_angle="http://knowledge.erco.com/properties#narrow"
+      g.has_ray_angle.should eql(['http://knowledge.erco.com/properties#narrow'])
     end
 end

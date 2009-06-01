@@ -37,7 +37,7 @@ module SemanticRecord
   end
 
   module Base::InstanceMethods
-    @attributes2 = []
+    @attributes = []
    # attr_accessor_with_versioning :uri
 
     #--
@@ -50,9 +50,9 @@ module SemanticRecord
         value_new = self.send(key.to_human_name)
         value = self.send(key.to_human_name,:old)
         # TODO: 
+        raise value.inspect unless value.blank?
         transaction_doc.add_update_statement(uri,key,value,value_new) unless value.blank?
       end
-
       self.class.update(transaction_doc)
     end
       
@@ -80,16 +80,15 @@ module SemanticRecord
 
     # Sets all the Values for a Object
     def attributes=(values)
-      raise values.inspect
-      @attributes2 = values
+      @attributes = values
 #       values.each do |key,value|
 #         @attributes << {key => {"value" => value['value'],"type" => value['type'] } }
 # #        self.send(key.to_s + "=",SemanticRecord::Property.new( value['value'],value['type'] ))
 #       end      
     end
     
-    def attributes2
-      @attributes2
+    def attributes
+      @attributes
     end
 
     # Creates a new Object with the attributes and their values in the values-Hash
@@ -128,7 +127,7 @@ module SemanticRecord
         class_eval %{
           def #{attribute} (version = :actual)
              if version == :actual
-               attributes2['#{attribute}']['value']
+               attributes['#{attribute}']['value']
              elsif version == :old
                @#{attribute}_old.nil? ? nil : @#{attribute}_old.value
              else
@@ -137,7 +136,6 @@ module SemanticRecord
            end
            
            def set_#{attribute} (value, init = false)
-
              if init
                @#{attribute}_modified = nil
                @#{attribute}_old = nil
@@ -145,15 +143,13 @@ module SemanticRecord
              if @#{attribute}_modified == nil
                 @#{attribute}_modified = 0
              elsif @#{attribute}_modified == 1
-               @#{attribute}_old = @#{attribute}
+               @#{attribute}_old =attributes['#{attribute}']
              end
-             
              if value.class.to_s == "String"
-                  @#{attribute} = SemanticRecord::Property.new(value)
+                  attributes['#{attribute}']={'type'=>'literal','value'=>[value]}
              elsif value.class.to_s == "URI"
-                 @#{attribute} = SemanticRecord::Property.new(value,"uri")  
-             elsif value.class.to_s == "SemanticRecord::Property"
-                 @#{attribute} = value
+                attributes[#{attribute}]={'type'=>'uri','value'=>[value]}
+                #raise "uri: " +  attributes[#{attribute}].inspect
              else
                raise ArgumentError
              end
@@ -170,7 +166,7 @@ module SemanticRecord
         class_eval %{
           def self.find_by_#{key.to_human_name} (val)
             instances_result = ResultParserJson.parse(self.find_by_sparql(\"SELECT ?uri #{attributes_names.to_sparql_properties} WHERE {?uri <#{key}> '\#{val}' #{attributes.to_optional_clause} } \"))
-            build(instances_result)
+           instances_result.nil? ? [] : build(instances_result)
           end
         }
       end
@@ -207,7 +203,6 @@ module SemanticRecord
         uri_to_search = URI.parse(uri_or_scope)
         instances_result = ResultParserJson.parse(self.find_by_sparql("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
       end
-      raise instances_result.inspect
       build(instances_result)
 
     end
