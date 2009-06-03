@@ -20,26 +20,28 @@ module SemanticRecord
     #Parses the result of a specific sparql-query that gets all instances and their attributes out of the store
     def self.parse(json_document)
       json_document = JSON.parse(json_document)
+             # raise json_document.inspect
       return nil if json_document['results']['bindings'].eql? [] 
-      aktuell=start=json_document['results']['bindings'].first['uri']['value']
+      aktuell=json_document['results']['bindings'].first['uri']['value']
       result=[]
       values=Hash.new
-      initHash(json_document,values)
-      json_document['results']['bindings'].each do |binding|
+      initHash(json_document['results']['bindings'].first,values)
+      json_document['results']['bindings'].each do |binding|  
         if !(binding['uri']['value'].eql? aktuell)
           uniqueHash values
           result << values.clone
-          initHash(json_document,values)
+          initHash(binding,values)
           aktuell = binding['uri']['value']
         end 
-        binding.each do |b|
-           values[b[0]]['value']<<b[1]['value']
-           values[b[0]]['type']=b[1]['type']
-         end
+        binding.each do |b|          
+          values[b[0]]['value']<<b[1]['value']
+          values[b[0]]['type']=b[1]['type']
+          values[b[0]]['history'] = []
         end
-          uniqueHash values
-          result << values.clone
-        result
+      end
+      uniqueHash values
+      result << values.clone
+      result
     end
     
     def self.uniqueHash(hash)
@@ -51,8 +53,8 @@ module SemanticRecord
     
     def self.initHash(doc,hash)
       hash.clear
-      doc['head']['vars'].each do |var|
-        hash[var]={'value'=>[],'type'=>''}
+      doc.each do |var|
+        hash[var[0]]={'value'=>[],'type'=>''}
       end
       hash
     end

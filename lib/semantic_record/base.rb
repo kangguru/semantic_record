@@ -47,25 +47,32 @@ module SemanticRecord
     def save
       transaction_doc = SemanticRecord::TransactionFactory.new
       self.class.attributes.keys.each do |key|
-        value_new = self.send(key.to_human_name)
-        value = self.send(key.to_human_name,:old)
+        unless attributes[key.to_human_name].blank?
+          value_new = attributes[key.to_human_name]['value']#self.send(key.to_human_name)
+          value = attributes[key.to_human_name]['history'].last#self.send(key.to_human_name,:old)
         # TODO: 
-        raise value.inspect unless value.blank?
-        transaction_doc.add_update_statement(uri,key,value,value_new) unless value.blank?
-      end
+#        raise value.inspect unless value.blank?
+          transaction_doc.add_update_statement(uri,key,value,value_new) unless value.blank?
+        end
+      end      
       self.class.update(transaction_doc)
     end
       
     #Adds the given p(roperty) and o(object) to the actucal instance/subject  
     def add!(p,o)
       transaction_doc = SemanticRecord::TransactionFactory.new
+
       transaction_doc.add_add_statement(uri,p,o)
-      
+#      raise transaction_doc.to_s.inspect      
       self.class.update(transaction_doc)
       # make the schema changes available
       self.class.construct
-      # update the instance
+      
       self.send(p.to_human_name + "=",o)
+#      raise self.attributes.inspect
+      
+      # update the instance
+      
     end
     
     # remove the given triple from the store, o can be set to a specific value
@@ -73,7 +80,7 @@ module SemanticRecord
       # TODO perhaps this should be moved to the property class -> jazz.composer.destory!
       transaction_doc = SemanticRecord::TransactionFactory.new
       transaction_doc.add_remove_statement(uri,p,o)
-      
+#      raise transaction_doc.to_s.inspect
       self.class.update(transaction_doc)
       self.class.construct      
     end
@@ -125,35 +132,30 @@ module SemanticRecord
       #attr_accessor_with_versioning *(attributes_names) unless attributes_names.empty?        
       [:uri,attributes_names].flatten.each do |attribute|
         class_eval %{
-          def #{attribute} (version = :actual)
-             if version == :actual
+          def #{attribute}
                attributes['#{attribute}']['value']
-             elsif version == :old
-               @#{attribute}_old.nil? ? nil : @#{attribute}_old.value
-             else
-               raise ArgumentError, "unkown access symbol"
-             end
-           end
+          end
            
            def set_#{attribute} (value, init = false)
-             if init
-               @#{attribute}_modified = nil
-               @#{attribute}_old = nil
+             
+             if attributes['#{attribute}'].nil?
+               attributes['#{attribute}'] = {'history' => []}
              end
-             if @#{attribute}_modified == nil
-                @#{attribute}_modified = 0
-             elsif @#{attribute}_modified == 1
-               @#{attribute}_old =attributes['#{attribute}']
-             end
+
+             old = attributes['#{attribute}']['value']
+
+             
              if value.class.to_s == "String"
-                  attributes['#{attribute}']={'type'=>'literal','value'=>[value]}
-             elsif value.class.to_s == "URI"
-                attributes[#{attribute}]={'type'=>'uri','value'=>[value]}
+                  attributes['#{attribute}']['value']=[value]
+                  attributes['#{attribute}']['type']='literal'
+             elsif value.class.to_s == "URI:HTTP"
+                  attributes['#{attribute}']['value']=value.to_s
+                  attributes['#{attribute}']['type']='uri'
                 #raise "uri: " +  attributes[#{attribute}].inspect
              else
                raise ArgumentError
              end
-             @#{attribute}_modified += 1
+              attributes['#{attribute}']['history'].unshift old
            end
            
            def #{attribute}= (value)
@@ -204,7 +206,6 @@ module SemanticRecord
         instances_result = ResultParserJson.parse(self.find_by_sparql("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
       end
       build(instances_result)
-
     end
 
     #Creates new Objects from the desired class

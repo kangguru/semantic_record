@@ -57,9 +57,14 @@ module SemanticRecord
       #--
       # TODO modify for applying changes that effect more than the object
       #++
-      raise "drin"
-      add_remove_statement(s,p,o)
-      add_add_statement(s,p,new_object)
+      o.each do |_o| 
+        add_remove_statement(s,p,_o)  
+      end
+      new_object.each do |_new|
+       add_add_statement(s,p,_new)
+      end
+      
+      #raise self.to_s.inspect
     end
     
     protected
@@ -67,10 +72,15 @@ module SemanticRecord
     # creates a triple that could be added to the transaction document
     def build_triple(s, p, o)
       returning [] do |triple|
-        [s,p,o].each do |resource|
+        #raise s.inspect
+        
+        # ugly!!! first should not called directly
+        [s.first,p,o].each do |resource|
           #--
           # FIXME if handling of properties ever changes (resource.type == URI)
           #++
+          
+          
           if resource =~ /http:\/\//
             triple << build_uri_element(resource)
           elsif resource.nil?
