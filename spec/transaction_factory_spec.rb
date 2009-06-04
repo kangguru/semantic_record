@@ -51,7 +51,7 @@ describe SemanticRecord::TransactionFactory do
   end
   
   it "should create an remove transaction that removes all attributes from an resource" do
-    @x.add_remove_statement(@s, nil, nil)
+    @x.add_remove_statement(@s, nil, [nil])
     @x.to_s.should eql( "<transaction><remove><uri>#{@s}</uri><null/><null/></remove></transaction>" )
   end
   

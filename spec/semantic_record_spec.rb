@@ -101,11 +101,11 @@ describe Genre do
     rock.first.uri.first.should eql("http://example.org/music#Rock")
   end
   
-  it "should raise an error if massasignment with unknown attribute" do
-    house = Genre.new
-    lambda { house.attributes={'invalid_accessor'=>'drum party'} }.should raise_error(NoMethodError)
-  end
-  
+  # it "should raise an error if massasignment with unknown attribute" do
+  #   house = Genre.new
+  #   lambda { house.attributes={'invalid_accessor'=>'drum party'} }.should raise_error(NoMethodError)
+  # end
+  # 
   it "should find Jazz by Jon" do
     g = Genre.find_by_artist("Jon")
     g.first.artist.first.should eql("Jon")
@@ -144,6 +144,7 @@ describe Genre do
     g.save
     
     g = Genre.find_by_artist("John Doo")[0]
+    raise g.artist.inspect
     g.artist.first.should eql("John Doo")
     g.artist="Jon"
     g.save

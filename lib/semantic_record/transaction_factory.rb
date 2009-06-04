@@ -29,9 +29,17 @@ module SemanticRecord
       #--
       # TODO move adding of multiple elements to support/helper
       #++
-      build_triple(s,p,o).each do |resource|
-        remove.add(resource)
-      end
+            construct_triples(s,p,o).each do |triple| 
+      #        add_remove_statement(triple['s'],triple['p'],triple['o'])  
+              build_triple(triple['s'],triple['p'],triple['o']).each do |resource|
+                remove.add(resource)
+              end
+           end
+      
+      
+      # build_triple(s,p,o).each do |resource|
+      #   remove.add(resource)
+      # end
 
       self.root.add(remove)
     end
@@ -45,10 +53,12 @@ module SemanticRecord
       #--
       # TODO move adding of multiple elements to support/helper
       #++
-      build_triple(s,p,o).each do |resource|
-        add_state.add(resource)
-      end
-
+      construct_triples(s,p,o).each do |triple| 
+#        add_remove_statement(triple['s'],triple['p'],triple['o'])  
+        build_triple(triple['s'],triple['p'],triple['o']).each do |resource|
+          add_state.add(resource)
+        end
+     end
       self.root.add(add_state)
     end
     
@@ -57,17 +67,27 @@ module SemanticRecord
       #--
       # TODO modify for applying changes that effect more than the object
       #++
-      o.each do |_o| 
-        add_remove_statement(s,p,_o)  
-      end
-      new_object.each do |_new|
-       add_add_statement(s,p,_new)
-      end
+      #construct_triples(s,p,o).each do |triple| 
+        add_remove_statement(s, p, o)  
+      #end
+      #construct_triples(s,p,new_object).each do |triple| 
+        add_add_statement(s, p, new_object)  
+      #end
       
       #raise self.to_s.inspect
     end
     
     protected
+    
+    def construct_triples(s,p,o)
+      returning [] do |triples|
+        s.each do |_s|
+          o.each do |_o|
+            triples << {'s' => _s,'p' => p,'o' => _o}
+          end
+        end
+      end
+    end
     
     # creates a triple that could be added to the transaction document
     def build_triple(s, p, o)
@@ -75,7 +95,7 @@ module SemanticRecord
         #raise s.inspect
         
         # ugly!!! first should not called directly
-        [s.first,p,o].each do |resource|
+        [s,p,o].each do |resource|
           #--
           # FIXME if handling of properties ever changes (resource.type == URI)
           #++

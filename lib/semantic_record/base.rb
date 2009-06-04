@@ -17,10 +17,17 @@ module SemanticRecord
     def self.construct_classes
       classes = ResultParserJson.hash_values(self.find_by_sparql("SELECT ?property_name ?property_type Where { ?property_name rdf:type owl:Class. FILTER (!isBlank(?property_name)) }"))
       
+      g = []
+      classes.keys.each do |key|
+        g << klass_name = key.to_human_name.gsub('-','_').camelize
+      end
+      
+      #raise g.inspect
       
       classes.keys.each do |key|
-#        raise key.inspect
+    #    raise key.inspect
         klass_name = key.to_human_name.gsub('-','_').camelize
+#        raise klass_name.inspect
         Object.class_eval %{
           class #{klass_name} < SemanticRecord::Base
             self.base_uri = "#{key.extract_base}#"
