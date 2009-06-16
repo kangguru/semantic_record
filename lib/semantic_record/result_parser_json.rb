@@ -20,6 +20,8 @@ module SemanticRecord
     #Parses the result of a specific sparql-query that gets all instances and their attributes out of the store
     def self.parse(json_document)
       json_document = JSON.parse(json_document)
+      
+#            raise json_document.inspect
              # raise json_document.inspect
       return nil if json_document['results']['bindings'].eql? [] 
       aktuell=json_document['results']['bindings'].first['uri']['value']
@@ -41,6 +43,8 @@ module SemanticRecord
       end
       uniqueHash values
       result << values.clone
+      
+
       result
     end
     

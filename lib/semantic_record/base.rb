@@ -31,6 +31,7 @@ module SemanticRecord
         Object.class_eval %{
           class #{klass_name} < SemanticRecord::Base
             self.base_uri = "#{key.extract_base}#"
+            self.rdf_type = "#{key.to_human_name}"
           end
         }
       end
