@@ -1,13 +1,15 @@
 module SemanticRecord
   #A semantic property that has a value and a type
-  class Property 
-    attr_accessor :type, :value
-    
-    #Creates a new Property-Instance with a value and a type(Uri or literal), the default ist literal
-    def initialize(value,type = "literal")
-      @type = type
-      @value = value
-      
+  class Property < Base
+    def possible_values
+      g = SemanticRecord::ResultParserJson.hash_values (self.class.find_by_sparql("SELECT ?property_name WHERE { ?property_name <#{uri}> ?o }"))
+      g.keys
     end
+    
+    def self.uri
+      "http://www.w3.org/2002/07/owl#ObjectProperty"
+    end
+    
+    
   end  
 end

@@ -23,7 +23,7 @@ module SemanticRecord
       end
       
       #raise g.inspect
-      
+#      raise g.inspect
       classes.keys.each do |key|
     #    raise key.inspect
         klass_name = key.to_human_name.gsub('-','_').camelize

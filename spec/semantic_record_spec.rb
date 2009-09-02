@@ -144,8 +144,8 @@ describe Genre do
     g.save
     
     g = Genre.find_by_artist("John Doo")[0]
-    raise g.artist.inspect
-    g.artist.first.should eql("John Doo")
+#    raise g.artist.inspect
+    g.artist.should include("John Doo")
     g.artist="Jon"
     g.save
  
