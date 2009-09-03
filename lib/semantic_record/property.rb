@@ -2,7 +2,7 @@ module SemanticRecord
   #A semantic property that has a value and a type
   class Property < Base
     def possible_values
-      g = SemanticRecord::ResultParserJson.hash_values (self.class.find_by_sparql("SELECT ?property_name WHERE { ?property_name <#{uri}> ?o }"))
+      g = SemanticRecord::ResultParserJson.hash_values (self.class.find_by_sparql("SELECT ?property_name WHERE { ?o  <#{uri}> ?property_name}"))
       g.keys
     end
     
