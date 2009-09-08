@@ -15,7 +15,7 @@ module SemanticRecord
     end
     
     def self.construct_classes
-      classes = ResultParserJson.hash_values(self.find_by_sparql("SELECT ?property_name ?property_type Where { ?property_name rdf:type owl:Class. FILTER (!isBlank(?property_name)) }"))
+      classes = ResultParserJson.hash_values(self.find_by_sparql("SELECT ?property_name ?property_type WHERE { ?property_name rdfs:subClassOf <http://knowledge.erco.com/products#Leuchte>. FILTER (!isBlank(?property_name)) }"))
       
       g = []
       classes.keys.each do |key|
@@ -211,7 +211,11 @@ module SemanticRecord
         # TODO non-uri handling
         #++
         uri_to_search = URI.parse(uri_or_scope)
+        
         instances_result = ResultParserJson.parse(self.find_by_sparql("SELECT ?uri #{attributes_names.to_sparql_properties} WHERE { ?uri rdf:type <#{uri}> #{attributes.to_optional_clause} FILTER (?uri = <#{uri_to_search.to_s}>) }") )
+        if instances_result.blank?
+          raise ArgumentError, "#{uri_to_search} not found!"
+        end
       end
       build(instances_result)
     end
