@@ -23,8 +23,8 @@ module SemanticRecord
       @repository = location[:repo]
     end
     
-    def find_by_sparql(query)
-      repository.query(@@prefixes.join(" ") + " " + query)        
+    def find_by_sparql(query,infer=false)
+      repository.query(@@prefixes.join(" ") + " " + query,:infer => infer )        
     end
     
     # updates data in the store      
