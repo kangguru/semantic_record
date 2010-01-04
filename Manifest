@@ -1,0 +1,14 @@
+lib/semantic_record/base.rb
+lib/semantic_record/connection_pool.rb
+lib/semantic_record/foxen.rb
+lib/semantic_record/namespaces.rb
+lib/semantic_record/support.rb
+lib/semantic_record.rb
+Manifest
+Rakefile
+script/console
+spec/foxen_spec.rb
+spec/namespaces_spec.rb
+spec/semantic_record_spec.rb
+spec/spec.opts
+spec/spec_helper.rb
