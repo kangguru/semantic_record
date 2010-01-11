@@ -3,7 +3,10 @@ require 'ruby-sesame'
 require 'json'
 
 module SemanticRecord
+
   class Base
+    
+    
     attr_reader :uri#, :connection  
 
     cattr_accessor :namespace
@@ -25,17 +28,19 @@ module SemanticRecord
         @uri = uri
         @presaved_attributes = {}
         
+        TripleManager.describe(uri)
+        
         #connection = self.class.connection
           
        if self.new_record?        
-        self.rdf_type= self.class
+        self.rdf_type= "#{Namespaces.resolve(:base)}#{self.class}"
        end
       end
 
       def new_record?
-        new_record = self.class.parse( connection.query( "SELECT ?result WHERE {<#{self.uri}> ?property ?result} LIMIT 1" ) )
-
-        new_record.empty? ? true : false
+        exists = TripleManager.exists_as_subject?(self.uri)#self.class.parse( connection.query( "SELECT ?result WHERE {<#{self.uri}> ?property ?result} LIMIT 1" ) )
+      
+        !exists
       end
 
       def type
@@ -133,18 +138,19 @@ module SemanticRecord
         # if self isn't an inherited form of this
         # class then return all existing instances
         #
+        
         if self == SemanticRecord
-          selector = "?nil"
+          s = "?nil"
         else
           uri = URI.parse "#{self.base}#{self}"
           if uri.absolute && uri.path
-            selector = "<#{uri.to_s}>"
+            s = "<#{uri.to_s}>"
           else
             raise ArgumentError, "base uri seems to be invalid"
           end
         end
-
-        instances_response = parse( connection.query("SELECT ?result WHERE {?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> #{selector}}") )
+#        raise selector.inspect
+        instances_response = TripleManager.get_subjects(s)
 
       end
       
@@ -165,29 +171,31 @@ module SemanticRecord
       end
       
       def proxy_setter(mth,*args)
-
         predicate = mth.to_sym.expand#(mth)
-        
+#        puts args
+ #       args.each do |arg|
+#           TripleManager.add(uri,predicate,arg)  
+#        end
+                
         @presaved_attributes[predicate] = args.flatten
       end  
 
       def proxy_getter(mth,*args)
-
+           
         predicate = mth.to_sym.expand#(mth)
 
         if @presaved_attributes.has_key?(predicate)
-          value_response = @presaved_attributes[predicate]
+           value_response = @presaved_attributes[predicate]
         else
-          q = "SELECT ?result WHERE {<#{self.uri}> <#{predicate}> ?result}"
-          value_response = self.class.parse( connection.query(q) )
+           value_response = TripleManager.get_objects(uri,predicate)  
         end
-       
-        if value_response.size <= 1
-          value_response.empty? ? nil : value_response.first
-        else
-          return value_response
-        end    
-
+         
+        # if value_response.size <= 1
+        #           value_response.empty? ? nil : value_response.first
+        #         else
+        #           return value_response
+        #         end    
+        
       end
       
       # ##

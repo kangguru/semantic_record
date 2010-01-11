@@ -15,17 +15,19 @@ describe SemanticRecord::Base do
     soul.new_record?.should be(true)
   end
   
-  it "should handle different base namespaces beween different classes" do
-    SemanticRecord::Base.base="http://example.org/music#"
-    Genre.base="http://genrebase.com/"
-    SemanticRecord::Base.base="http://extended.example.org/"
-    
-    Genre.base.should_not eql(SemanticRecord::Base.base)
+  it "should get correct values" do
+    student = SemanticRecord::Base.new("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Philipp_Ohliger")
+
+    student.rdfs_label.should include("Philipp Ohliger")
   end
   
+  
   it "should correctly resolve the type of an object" do
-    pop = Song.find.first
-    types = [pop.type].flatten.collect {|t| t.uri}
+    #s = Song.new("http://example.song.com/Thriller")
+    pop = Song.find
+    
+    raise pop.first.inspect
+    #types = [pop.type].flatten.collect {|t| t.uri}
 
     types.should include("http://example.org/music#Song")
   end

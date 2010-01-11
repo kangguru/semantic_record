@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 
 Namespaces.register( {:base => "http://example.org/music#"} )
 Namespaces.register( {:erco => "http://knowledge.erco.com/properties#"} )
-
+Namespaces.register( {:smw => "http://semantic-mediawiki.org/swivt/1.0#" })
 SemanticRecord::Base.establish_connection("http://mims03.gm.fh-koeln.de:8282/openrdf-sesame","erco")
 
 SemanticRecord::Base.base = "http://example.org/music#"
@@ -29,3 +29,6 @@ SemanticRecord::Base.base = "http://example.org/music#"
 #puts SemanticRecord::Base.namespace[:base]
 #g.artist = "Jon Doo"
 #puts g.rdf_type.uri
+
+SemanticRecord::Pool.register( {:uri => "http://mims03.gm.fh-koeln.de:8282/openrdf-sesame",:type => :sesame, :default => true, :writable => true, :repository => "miwiki" } )
+#SemanticRecord::Pool.register( {:uri => "http://192.168.1.28:8080/openrdf-sesame",:type => :sesame, :default => true, :writable => true,:repository => "test" } )
