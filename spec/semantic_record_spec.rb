@@ -25,9 +25,9 @@ describe SemanticRecord::Base do
   it "should correctly resolve the type of an object" do
     #s = Song.new("http://example.song.com/Thriller")
     pop = Song.find
+    types = [pop.first.rdf_type].flatten.collect {|t| t.uri}
+    #raise .inspect
     
-    raise pop.first.inspect
-    #types = [pop.type].flatten.collect {|t| t.uri}
 
     types.should include("http://example.org/music#Song")
   end
@@ -77,7 +77,7 @@ describe SemanticRecord::Base do
     fantastic.save.should be(true)
     
     fantastic_soul = Genre.new("http://soul-fantastic.com/#soul")
-    fantastic_soul.base_artist.should eql("Michael Jackson")    
+    fantastic_soul.base_artist.should include("Michael Jackson")    
   end
   
   it "should save multiple values to existing object" do

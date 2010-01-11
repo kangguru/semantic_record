@@ -12,7 +12,7 @@ module SemanticRecord
     cattr_accessor :namespace
 
     class << self  
-      attr_accessor :base, :connection
+      attr_accessor :base, :connection,:rdf_type,:uri
     end
 
 
@@ -32,8 +32,8 @@ module SemanticRecord
         
         #connection = self.class.connection
           
-       if self.new_record?        
-        self.rdf_type= "#{Namespaces.resolve(:base)}#{self.class}"
+       if self.new_record?                 
+        self.rdf_type = self.class#= "#{Namespaces.resolve(:base)}#{self.class}"
        end
       end
 
@@ -60,21 +60,19 @@ module SemanticRecord
         connection.add!(remove, "application/x-rdftransaction")
       end
       
+      def attributes()
+        
+      end
+      
       def save
 
         if new_record?
           begin 
             @presaved_attributes.each {|predicate,value|
-              v = value.collect {|val|
-                if val.kind_of?(SemanticRecord) || (val.kind_of?(Class) && val.respond_to?(:uri) )
-                "<#{val.uri}>"
-                else
-                "\"#{val.to_s}\""
-                end
-              }.join(",")
-              
-              connection.add!("<#{self.uri}> <#{predicate}> #{v}  .")            
-              
+              value.each do |val|
+                   TripleManager.add(uri,predicate,val)
+              end
+
               @presaved_attributes.delete(predicate)
             }
           rescue
@@ -82,25 +80,27 @@ module SemanticRecord
           end           
         else
           begin
-           t = Foxen::TransactionFactory.new
-            @presaved_attributes.each {|predicate,value|
-              t.add_remove_statement(self.uri,predicate,nil)
-              
-              value.each do |val|
-                if val.kind_of?(SemanticRecord) || (val.kind_of?(Class) && val.respond_to?(:uri) )
-                  t.add_add_statement(self.uri,predicate,val.uri)
-                else
-                 t.add_add_statement(self.uri,predicate,val.to_s)
-                end
-              end
-              
-              
-
-              @presaved_attributes.delete(predicate)
-            }
-            
-            connection.add!(t.to_s, "application/x-rdftransaction")
-          rescue
+            TripleManager.update(uri,@presaved_attributes)
+           # t = Foxen::TransactionFactory.new
+           #  @presaved_attributes.each {|predicate,value|
+           #    t.add_remove_statement(self.uri,predicate,nil)
+           #    
+           #    value.each do |val|
+           #      if val.kind_of?(SemanticRecord) || (val.kind_of?(Class) && val.respond_to?(:uri) )
+           #        t.add_add_statement(self.uri,predicate,val.uri)
+           #      else
+           #       t.add_add_statement(self.uri,predicate,val.to_s)
+           #      end
+           #    end
+           #    
+           #    
+           # 
+           #    @presaved_attributes.delete(predicate)
+           #  }
+           #  
+           #  connection.add!(t.to_s, "application/x-rdftransaction")
+          rescue ArgumentError
+            puts $!
             return false
           end
         end
@@ -119,14 +119,19 @@ module SemanticRecord
       def self.inherited(receiver)
         receiver.base = self.base
         receiver.connection = self.connection
+        receiver.rdf_type = "http://http://www.w3.org/2000/01/rdf-schema#Class"
       end
 
       def self.rdf_type
-        self
+        @rdf_type ||= "http://www.w3.org/2002/07/owl#Thing"
       end
       
       def self.uri
-        "#{self.base}#{self}"
+        @uri ||= "#{self.base}#{self}"
+      end
+            
+      def self.base
+        @base ||= "http://example.org/"
       end
       
       def self.find_by_uri
@@ -172,11 +177,6 @@ module SemanticRecord
       
       def proxy_setter(mth,*args)
         predicate = mth.to_sym.expand#(mth)
-#        puts args
- #       args.each do |arg|
-#           TripleManager.add(uri,predicate,arg)  
-#        end
-                
         @presaved_attributes[predicate] = args.flatten
       end  
 
@@ -189,12 +189,6 @@ module SemanticRecord
         else
            value_response = TripleManager.get_objects(uri,predicate)  
         end
-         
-        # if value_response.size <= 1
-        #           value_response.empty? ? nil : value_response.first
-        #         else
-        #           return value_response
-        #         end    
         
       end
       
