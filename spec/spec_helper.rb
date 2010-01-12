@@ -5,7 +5,7 @@ require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 Namespaces.register( {:base => "http://example.org/music#"} )
 Namespaces.register( {:erco => "http://knowledge.erco.com/properties#"} )
 
-SemanticRecord::Base.establish_connection("http://mims03.gm.fh-koeln.de:8282/openrdf-sesame","erco")
+SemanticRecord::Base.establish_connection("http://192.168.56.101:8080/openrdf-sesame","test")
 
 SemanticRecord::Base.base = "http://example.org/music#"
 
