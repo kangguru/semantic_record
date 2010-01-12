@@ -7,7 +7,7 @@ describe SemanticRecord::Base do
   
   after(:each) do
     SemanticRecord::Base.base="http://example.org/music#"
-    @soul.destroy!
+#    @soul.destroy!
   end
   
   it "should mark an new instance as new_record" do    
@@ -25,6 +25,7 @@ describe SemanticRecord::Base do
   it "should correctly resolve the type of an object" do
     #s = Song.new("http://example.song.com/Thriller")
     pop = Song.find
+#    raise Song.uri
     types = [pop.first.rdf_type].flatten.collect {|t| t.uri}
     #raise .inspect
     

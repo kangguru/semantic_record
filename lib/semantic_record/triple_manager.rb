@@ -28,7 +28,6 @@ module TripleManager
      query = Redland::Query.new("SELECT ?result WHERE {?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> #{s}}" )
      result = @@transit_model.query_execute(query)
        
-#     res = []
      returning [] do |res|
        while !result.finished?
          value = result.binding_value_by_name("result")
@@ -43,7 +42,7 @@ module TripleManager
    end
 
    def self.get_objects(subject,predicate)
-     puts "query: #{subject} for #{predicate}, #{@@transit_model.size}"
+     #puts "query: #{subject} for #{predicate}, #{@@transit_model.size}"
      
      query = Redland::Query.new("SELECT ?result WHERE {<#{subject}> <#{predicate}> ?result}" )
      result = @@transit_model.query_execute(query)
@@ -64,19 +63,21 @@ module TripleManager
    end
 
    def self.add(subject,predicate,object,context=nil)
-     s = Redland::Statement.new
-     s.subject = Redland::Node.new(Redland::Uri.new( subject ))
-     s.predicate = Redland::Node.new(Redland::Uri.new( predicate ))
+     # s = Redland::Statement.new
+     #   s.subject = Redland::Node.new(Redland::Uri.new( subject ))
+     #   s.predicate = Redland::Node.new(Redland::Uri.new( predicate ))
+     #   
+     #   if object.kind_of?(SemanticRecord) || (object.kind_of?(Class) && object.respond_to?(:uri) )
+     #     s.object = Redland::Node.new(Redland::Uri.new( object.uri ))
+     #   else
+     #     s.object = Redland::Node.new( object.to_s )
+     #   end
      
-     if object.kind_of?(SemanticRecord) || (object.kind_of?(Class) && object.respond_to?(:uri) )
-       s.object = Redland::Node.new(Redland::Uri.new( object.uri ))
-     else
-       s.object = Redland::Node.new( object.to_s )
-     end
+     s,p,o = build(subject,predicate,object)
      
      #s.object = Redland::Node.new( object )
      
-     @@transit_model.add_statement(s,context)
+     @@transit_model.add(s,p,o,context)
    end
    
    def self.update(subject,attributes)
