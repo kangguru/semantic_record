@@ -116,7 +116,7 @@ module SemanticRecord
         if self == SemanticRecord
           s = "?nil"
         else
-          uri = URI.parse "#{self.base}#{self}"
+          uri = URI.parse self.uri #"#{self.base}#{self}"
           if uri.absolute && uri.path
             s = "<#{uri.to_s}>"
           else
