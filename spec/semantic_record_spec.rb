@@ -15,6 +15,13 @@ describe SemanticRecord::Base do
     soul.new_record?.should be(true)
   end
   
+  it "should get correct values" do
+    student = SemanticRecord::Base.new("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Philipp_Ohliger")
+
+    student.rdfs_label.should include("Philipp Ohliger")
+  end
+  
+  
   it "should handle different base namespaces beween different classes" do
     SemanticRecord::Base.base="http://example.org/music#"
     Genre.base="http://genrebase.com/"
