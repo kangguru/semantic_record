@@ -17,7 +17,7 @@ module TripleManager
       q = query
       parser = Redland::Parser.new
       SemanticRecord::Pool.connections.each do |connection|
-          content = connection.socket.query(q,:result_type => RubySesame::DATA_TYPES[:RDFXML] )
+          content = connection.socket.query(q,:result_type => RubySesame::DATA_TYPES[:RDFXML],:infer => true )
           parser.parse_string_into_model(@@transit_model,content,Redland::Uri.new( "http://example.org/" ))           
       end
    end
@@ -63,16 +63,6 @@ module TripleManager
    end
 
    def self.add(subject,predicate,object,context=nil)
-     # s = Redland::Statement.new
-     #   s.subject = Redland::Node.new(Redland::Uri.new( subject ))
-     #   s.predicate = Redland::Node.new(Redland::Uri.new( predicate ))
-     #   
-     #   if object.kind_of?(SemanticRecord) || (object.kind_of?(Class) && object.respond_to?(:uri) )
-     #     s.object = Redland::Node.new(Redland::Uri.new( object.uri ))
-     #   else
-     #     s.object = Redland::Node.new( object.to_s )
-     #   end
-     
      s,p,o = build(subject,predicate,object)
      
      #s.object = Redland::Node.new( object )
@@ -97,6 +87,7 @@ module TripleManager
 
 
    def self.exists_as_subject?(uri)
+     # FIXME make me to ask query
      query = Redland::Query.new("SELECT ?result WHERE {<#{uri}> ?property ?result} LIMIT 1")
      result = @@transit_model.query_execute(query).size
      result > 0 ? true : false

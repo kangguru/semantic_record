@@ -152,7 +152,7 @@ module SemanticRecord
       # # TODO: make me external
       # ##
       def expand(name)
-        ns, predicate = name.id2name.split("_")
+        ns, predicate = name.id2name.split("_",2)
         if predicate.blank? 
           raise Namespaces::NoPredicateError, "no valid predicate defined"
         end

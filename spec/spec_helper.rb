@@ -31,4 +31,5 @@ SemanticRecord::Base.base = "http://example.org/music#"
 #puts g.rdf_type.uri
 
 #SemanticRecord::Pool.register( {:uri => "http://mims03.gm.fh-koeln.de:8282/openrdf-sesame",:type => :sesame, :default => true, :writable => true, :repository => "miwiki" } )
-SemanticRecord::Pool.register( {:uri => "http://192.168.56.101:8080/openrdf-sesame",:type => :sesame, :default => true, :writable => true,:repository => "test" } )
+#SemanticRecord::Pool.register( {:uri => "http://192.168.56.101:8080/openrdf-sesame",:type => :sesame, :default => true, :writable => true,:repository => "test" } )
+SemanticRecord::Pool.load( File.join(File.dirname(__FILE__), *%w[../config/triplestore.yml]) )

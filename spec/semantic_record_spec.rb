@@ -90,4 +90,11 @@ describe SemanticRecord::Base do
     @soul.base_artist.should include("Shakira","Blur","Elvis")
   end
   
+  it "should handle illegal base uri" do
+    SemanticRecord::Base.base = "example"
+    
+#    lambda { g.send(:expand,:rdfa_type) }.should raise_error(Namespaces::NoNamespaceError)
+    lambda { SemanticRecord::Base.find }.should raise_error(ArgumentError)
+  end
+  
 end
