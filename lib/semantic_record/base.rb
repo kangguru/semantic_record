@@ -36,6 +36,9 @@ module SemanticRecord
         proxy_getter(:rdf_type)
       end
       
+      def attribute(p_uri)
+        TripleManager.property_for(uri,p_uri)
+      end
       
       # FIXME refactor me
       def destroy!
@@ -107,6 +110,10 @@ module SemanticRecord
         
       end
       
+      def self.find_by_sparql(query)
+        TripleManager.get_by_sparql(query,true)
+      end
+      
       def self.find
         #
         # if self isn't an inherited form of this
@@ -143,7 +150,7 @@ module SemanticRecord
         if @presaved_attributes.has_key?(predicate)
            value_response = @presaved_attributes[predicate]
         else
-           value_response = TripleManager.get_objects(uri,predicate)  
+           value_response = TripleManager.get_objects(uri,predicate,*args)  
         end
         
       end

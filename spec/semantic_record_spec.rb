@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe SemanticRecord::Base do
+describe "SemanticRecord::Base" do
   before(:each) do
    @soul = Genre.new("http://soul-fantastic.com/#soul")
   end
@@ -96,5 +96,12 @@ describe SemanticRecord::Base do
 #    lambda { g.send(:expand,:rdfa_type) }.should raise_error(Namespaces::NoNamespaceError)
     lambda { SemanticRecord::Base.find }.should raise_error(ArgumentError)
   end
+  
+  it "should find by generic sparql" do
+    inst = SemanticRecord::Base.find_by_sparql('SELECT ?result WHERE { ?result <http://www.w3.org/2000/01/rdf-schema#label> "LarsBrillert"}')
+    
+    inst.size.should equal(1)
+  end
+
   
 end
