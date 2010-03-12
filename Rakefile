@@ -3,8 +3,8 @@ require 'lib/semantic_record'
 require 'spec/rake/spectask'
 require 'echoe'
 
-Echoe.new('semantic_record', '0.0.9') do |p|
-  p.description    = "use sesame as backend"
+Echoe.new('semantic_record', '0.1.0') do |p|
+  p.description    = "use sesame as backend for rails or any other ruby app"
   p.url            = "http://semanticrecord.aufnahme.com"
   p.author         = "Lars Brillert"
   p.email          = "development@aufnahme.com"

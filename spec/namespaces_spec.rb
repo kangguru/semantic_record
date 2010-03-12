@@ -20,4 +20,13 @@ describe Namespaces do
     Namespaces.resolve(:base).should eql("http://basecamp.org/")
   end
   
+  it "should handle different base namespaces beween different classes" do
+    SemanticRecord::Base.base="http://example.org/music#"
+    Genre.base="http://genrebase.com/"
+    SemanticRecord::Base.base="http://extended.example.org/"
+    
+    Genre.base.should_not eql(SemanticRecord::Base.base)
+  end
+  
+  
 end

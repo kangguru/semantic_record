@@ -1,3 +1,5 @@
+require 'rubygems'
+gem 'activesupport', '=2.3.5'
 require 'active_support'
 
 begin
@@ -10,7 +12,10 @@ rescue LoadError
   end
 end
 
+require 'sparql_parser/sparql'
+require 'semantic_record/triple_manager'
 require 'semantic_record/base'
 require 'semantic_record/property'
+require 'semantic_record/connection_pool'
 require 'semantic_record/namespaces'
 require 'semantic_record/foxen'

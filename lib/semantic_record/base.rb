@@ -3,73 +3,63 @@ require 'ruby-sesame'
 require 'json'
 
 module SemanticRecord
+
   class Base
-    attr_reader :uri#, :connection  
+      attr_reader :uri
 
-    cattr_accessor :namespace
-
-    class << self  
-      attr_accessor :base, :connection
-    end
-
-
-    # this should be somewhere external
-    self.namespace = {:rdf => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-      :rdfs => "http://www.w3.org/2000/01/rdf-schema#", 
-      :owl => "http://www.w3.org/2002/07/owl#",
-      :xsd => "http://www.w3.org/2001/XMLSchema#",
-      :base => self.base}
-
+      class << self  
+        attr_accessor :base, :connection,:rdf_type,:uri
+      end
 
       def initialize(uri)
         @uri = uri
         @presaved_attributes = {}
         
-        #connection = self.class.connection
+        TripleManager.describe(uri)
           
-       if self.new_record?        
-        self.rdf_type= self.class
-       end
+        if self.new_record?                 
+         self.rdf_type = self.class
+        end
       end
 
       def new_record?
-        new_record = self.class.parse( connection.query( "SELECT ?result WHERE {<#{self.uri}> ?property ?result} LIMIT 1" ) )
-
-        new_record.empty? ? true : false
+        exists = TripleManager.exists_as_subject?(self.uri)
+      
+        !exists
       end
 
       def type
         proxy_getter(:rdf_type)
       end
       
-      def destroy!
-         remove = 
-           "<transaction>
-             <remove>
-               <uri>#{uri}</uri>
-               <null/>
-               <null/>
-             </remove>
-           </transaction>"
-        
-        connection.add!(remove, "application/x-rdftransaction")
+      def attribute(p_uri)
+        TripleManager.property_for(uri,p_uri)
       end
       
+      def attributes
+        TripleManager.properties_for(uri)
+      end
+      
+      def destroy!
+         remove = 
+         "<transaction>
+          <remove>
+            <uri>#{uri}</uri>
+            <null/>
+            <null/>
+          </remove>
+          </transaction>"      
+        connection.add!(remove, "application/x-rdftransaction")
+      end
+            
       def save
-
         if new_record?
           begin 
             @presaved_attributes.each {|predicate,value|
-              v = value.collect {|val|
-                if val.kind_of?(SemanticRecord) || (val.kind_of?(Class) && val.respond_to?(:uri) )
-                "<#{val.uri}>"
-                else
-                "\"#{val.to_s}\""
-                end
-              }.join(",")
-              
-              connection.add!("<#{self.uri}> <#{predicate}> #{v}  .")            
-              
+              value.each do |val|
+                   TripleManager.add(uri,predicate,val)
+              end
+
               @presaved_attributes.delete(predicate)
             }
           rescue
@@ -77,29 +67,14 @@ module SemanticRecord
           end           
         else
           begin
-           t = Foxen::TransactionFactory.new
-            @presaved_attributes.each {|predicate,value|
-              t.add_remove_statement(self.uri,predicate,nil)
-              
-              value.each do |val|
-                if val.kind_of?(SemanticRecord) || (val.kind_of?(Class) && val.respond_to?(:uri) )
-                  t.add_add_statement(self.uri,predicate,val.uri)
-                else
-                 t.add_add_statement(self.uri,predicate,val.to_s)
-                end
-              end
-              
-              
 
-              @presaved_attributes.delete(predicate)
-            }
-            
-            connection.add!(t.to_s, "application/x-rdftransaction")
-          rescue
+            TripleManager.update(uri,@presaved_attributes)
+            @presaved_attributes = {}
+          rescue ArgumentError
+            puts $!
             return false
           end
         end
-        
         true
       end
       
@@ -113,88 +88,71 @@ module SemanticRecord
 
       def self.inherited(receiver)
         receiver.base = self.base
-        receiver.connection = self.connection
+        receiver.rdf_type = "http://http://www.w3.org/2000/01/rdf-schema#Class"
       end
 
+      def self.count
+        TripleManager.count
+      end
+      
       def self.rdf_type
-        self
+        @rdf_type ||= "http://www.w3.org/2002/07/owl#Thing"
       end
       
       def self.uri
-        "#{self.base}#{self}"
+        @uri ||= "#{self.base}#{self}"
+      end
+            
+      def self.base
+        @base ||= "http://example.org/"
       end
       
       def self.find_by_uri
         
       end
       
+      def self.find_by_sparql(query)
+        TripleManager.get_by_sparql(query,true)
+      end
+      
       def self.find
-        #
         # if self isn't an inherited form of this
-        # class then return all existing instances
-        #
+        # class then return all existing instances        
         if self == SemanticRecord
-          selector = "?nil"
+          s = "?nil"
         else
-          uri = URI.parse "#{self.base}#{self}"
+          uri = URI.parse self.uri #"#{self.base}#{self}"
           if uri.absolute && uri.path
-            selector = "<#{uri.to_s}>"
+            s = "<#{uri.to_s}>"
           else
             raise ArgumentError, "base uri seems to be invalid"
           end
         end
+        instances_response = TripleManager.get_subjects(s)
 
-        instances_response = parse( connection.query("SELECT ?result WHERE {?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> #{selector}}") )
-
-      end
-      
-      
-      ##
-      # TODO: make me non public and more comfortable
-      ##
-      def self.establish_connection(uri,respository)
-        @connection = RubySesame::Server.new(uri).repository(respository)
       end
 
       protected
       
-      #attr_accessor :connection
-      
-      def connection
-        self.class.connection
-      end
-      
       def proxy_setter(mth,*args)
-
         predicate = mth.to_sym.expand#(mth)
-        
         @presaved_attributes[predicate] = args.flatten
       end  
 
       def proxy_getter(mth,*args)
-
+           
         predicate = mth.to_sym.expand#(mth)
 
         if @presaved_attributes.has_key?(predicate)
-          value_response = @presaved_attributes[predicate]
+           value_response = @presaved_attributes[predicate]
         else
-          q = "SELECT ?result WHERE {<#{self.uri}> <#{predicate}> ?result}"
-          value_response = self.class.parse( connection.query(q) )
+           value_response = TripleManager.get_objects(uri,predicate,*args)  
         end
-       
-        if value_response.size <= 1
-          value_response.empty? ? nil : value_response.first
-        else
-          return value_response
-        end    
-
+        
       end
-      
-      # ##
-      # # TODO: make me external
-      # ##
-      def expand(name)
-        ns, predicate = name.id2name.split("_")
+    
+    def expand(name)
+        ns, predicate = name.id2name.split("_",2)
         if predicate.blank? 
           raise Namespaces::NoPredicateError, "no valid predicate defined"
         end
@@ -204,19 +162,7 @@ module SemanticRecord
         
         return namespace + predicate
       end
-      
-      def self.parse(response)
-        #puts response
-        json = JSON.parse( response )
-        returning [] do |instances|
-          json['results']['bindings'].each do |binding|
-            if binding['result']['type']=="uri"
-              instances << new(binding['result']['value'])
-            else
-              instances << binding['result']['value']
-            end
-          end
-        end  
-      end
     end
+    
+    
 end

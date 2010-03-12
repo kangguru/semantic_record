@@ -5,8 +5,9 @@ require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 
 Namespaces.register( {:base => "http://example.org/music#"} )
 Namespaces.register( {:erco => "http://knowledge.erco.com/properties#"} )
-
-SemanticRecord::Base.establish_connection("http://192.168.56.101:8080/openrdf-sesame","test")
+Namespaces.register( {:smw => "http://semantic-mediawiki.org/swivt/1.0#" })
+Namespaces.register( {:dbpedia => "http://dbpedia.org/ontology/Person/" })
+#SemanticRecord::Base.establish_connection("http://mims03.gm.fh-koeln.de:8282/openrdf-sesame","erco")
 
 SemanticRecord::Base.base = "http://example.org/music#"
 
@@ -31,3 +32,4 @@ SemanticRecord::Base.base = "http://example.org/music#"
 #g.artist = "Jon Doo"
 #puts g.rdf_type.uri
 
+SemanticRecord::Pool.load( File.join(File.dirname(__FILE__), *%w[../config/triplestore.yml]) )

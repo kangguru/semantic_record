@@ -1,18 +1,23 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe SemanticRecord::Base do
+describe "SemanticRecord::Base" do
   before(:each) do
    @soul = Genre.new("http://soul-fantastic.com/#soul")
   end
   
   after(:each) do
     SemanticRecord::Base.base="http://example.org/music#"
-    @soul.destroy!
+#    @soul.destroy!
   end
   
   it "should mark an new instance as new_record" do    
     soul = Genre.new("http://soul-fantastic.com/#soul#{Time.now.to_i}")
     soul.new_record?.should be(true)
+    
+    soul.save
+    
+    soul.new_record?.should_not be(true)
+    
   end
   
   it "should get correct values" do
@@ -22,17 +27,13 @@ describe SemanticRecord::Base do
   end
   
   
-  it "should handle different base namespaces beween different classes" do
-    SemanticRecord::Base.base="http://example.org/music#"
-    Genre.base="http://genrebase.com/"
-    SemanticRecord::Base.base="http://extended.example.org/"
-    
-    Genre.base.should_not eql(SemanticRecord::Base.base)
-  end
-  
   it "should correctly resolve the type of an object" do
-    pop = Song.find.first
-    types = [pop.type].flatten.collect {|t| t.uri}
+    #s = Song.new("http://example.song.com/Thriller")
+    pop = Song.find
+#    raise Song.uri
+    types = [pop.first.rdf_type].flatten.collect {|t| t.uri}
+    #raise .inspect
+    
 
     types.should include("http://example.org/music#Song")
   end
@@ -77,22 +78,44 @@ describe SemanticRecord::Base do
     fantastic = Genre.new("http://soul-fantastic.com/#soul")
     fantastic.base_artist.should include("Jonny Cash","John Doo")
     
-    
+  
     fantastic.base_artist="Michael Jackson"
+    fantastic.new_record?.should_not be(true)
     fantastic.save.should be(true)
+  
     
     fantastic_soul = Genre.new("http://soul-fantastic.com/#soul")
-    fantastic_soul.base_artist.should eql("Michael Jackson")    
+    fantastic_soul.base_artist.should include("Michael Jackson") 
+    fantastic_soul.base_artist.should_not include("John Doo") 
   end
   
   it "should save multiple values to existing object" do
     @soul.save.should be(true)
-    
-    @soul.base_artist = "Shakira","Blur","Elvis"
+#    raise @soul.base_artist.inspect        
+    @soul.base_artist = "Elvis","Shakira","Blur"
+
     @soul.save.should be(true)
-    
+
     @soul.base_artist.should include("Shakira","Blur","Elvis")
 
   end
   
+  it "should handle illegal base uri" do
+    SemanticRecord::Base.base = "example"
+    
+#    lambda { g.send(:expand,:rdfa_type) }.should raise_error(Namespaces::NoNamespaceError)
+    lambda { SemanticRecord::Base.find }.should raise_error(ArgumentError)
+  end
+  
+  it "should find by generic sparql" do
+    inst = SemanticRecord::Base.find_by_sparql('SELECT ?result WHERE { ?result <http://www.w3.org/2000/01/rdf-schema#label> "LarsBrillert"}')
+    
+    inst.size.should equal(1)
+  end
+
+  it "should description" do
+    inst = SemanticRecord::Base.find_by_sparql('SELECT ?result WHERE { ?result <http://www.w3.org/2000/01/rdf-schema#label> "LarsBrillert"}').first
+    
+    #raise inst.attributes.inspect
+  end
 end
