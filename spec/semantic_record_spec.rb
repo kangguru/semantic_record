@@ -92,6 +92,7 @@ describe SemanticRecord::Base do
     @soul.save.should be(true)
     
     @soul.base_artist.should include("Shakira","Blur","Elvis")
+
   end
   
 end

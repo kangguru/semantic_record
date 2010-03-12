@@ -1,8 +1,9 @@
 lib/semantic_record/base.rb
-lib/semantic_record/connection_pool.rb
-lib/semantic_record/foxen.rb
-lib/semantic_record/namespaces.rb
+lib/semantic_record/property.rb
+lib/semantic_record/result_parser_json.rb
+lib/semantic_record/sesame_adapter.rb
 lib/semantic_record/support.rb
+lib/semantic_record/transaction_factory.rb
 lib/semantic_record.rb
 Manifest
 Rakefile
@@ -12,3 +13,12 @@ spec/namespaces_spec.rb
 spec/semantic_record_spec.rb
 spec/spec.opts
 spec/spec_helper.rb
+spec/result_parser_json_spec.rb
+spec/semantic_record_light_spec.rb
+spec/semantic_record_spec.rb
+spec/sesame_adapter_spec.rb
+spec/spec.opts
+spec/spec_helper.rb
+spec/support_attr_spec.rb
+spec/support_spec.rb
+spec/transaction_factory_spec.rb

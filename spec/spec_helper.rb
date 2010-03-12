@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spec'
+
 require File.join(File.dirname(__FILE__), *%w[../lib/semantic_record])
 
 Namespaces.register( {:base => "http://example.org/music#"} )
@@ -29,3 +30,4 @@ SemanticRecord::Base.base = "http://example.org/music#"
 #puts SemanticRecord::Base.namespace[:base]
 #g.artist = "Jon Doo"
 #puts g.rdf_type.uri
+
