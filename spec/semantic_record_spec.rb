@@ -13,6 +13,11 @@ describe "SemanticRecord::Base" do
   it "should mark an new instance as new_record" do    
     soul = Genre.new("http://soul-fantastic.com/#soul#{Time.now.to_i}")
     soul.new_record?.should be(true)
+    
+    soul.save
+    
+    soul.new_record?.should_not be(true)
+    
   end
   
   it "should get correct values" do
@@ -73,20 +78,24 @@ describe "SemanticRecord::Base" do
     fantastic = Genre.new("http://soul-fantastic.com/#soul")
     fantastic.base_artist.should include("Jonny Cash","John Doo")
     
-    
+  
     fantastic.base_artist="Michael Jackson"
+    fantastic.new_record?.should_not be(true)
     fantastic.save.should be(true)
+  
     
     fantastic_soul = Genre.new("http://soul-fantastic.com/#soul")
-    fantastic_soul.base_artist.should include("Michael Jackson")    
+    fantastic_soul.base_artist.should include("Michael Jackson") 
+    fantastic_soul.base_artist.should_not include("John Doo") 
   end
   
   it "should save multiple values to existing object" do
     @soul.save.should be(true)
-    
-    @soul.base_artist = "Shakira","Blur","Elvis"
+#    raise @soul.base_artist.inspect        
+    @soul.base_artist = "Elvis","Shakira","Blur"
+
     @soul.save.should be(true)
-    
+
     @soul.base_artist.should include("Shakira","Blur","Elvis")
   end
   
@@ -103,5 +112,9 @@ describe "SemanticRecord::Base" do
     inst.size.should equal(1)
   end
 
-  
+  it "should description" do
+    inst = SemanticRecord::Base.find_by_sparql('SELECT ?result WHERE { ?result <http://www.w3.org/2000/01/rdf-schema#label> "LarsBrillert"}').first
+    
+    #raise inst.attributes.inspect
+  end
 end

@@ -18,6 +18,5 @@ require 'semantic_record/base'
 require 'semantic_record/property'
 
 require 'semantic_record/connection_pool'
-#require 'semantic_record/support'
 require 'semantic_record/namespaces'
 require 'semantic_record/foxen'
