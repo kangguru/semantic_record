@@ -16,10 +16,13 @@ describe SemanticRecord::Base do
   it "should get resource from remote" do
     tim = SemanticRecord::Base.new("http://dbpedia.org/resource/Tim_Berners-Lee")
     
-#    raise tim.rdfs_label(:lang => :de).inspect
-
     tim.dbpedia_birthPlace.first.uri.should eql("http://dbpedia.org/resource/London")
-    
-    #tim.attribute("http://dbpedia.org/ontology/Person/birthPlace")[:value].first.uri.should eql("http://dbpedia.org/resource/London")
+  
+  end
+  
+  it "should description" do
+    blitz = SemanticRecord::Base.new("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/BLITZ_-2D_kollaboratives_mobiles_multimediales_System_zur_Unterst-C3-BCtzung_von_Besprechungen")
+    atts = blitz.attribute("http://www.aktors.org/ontology/portal#addresses-generic-area-of-interest")
+    raise atts.inspect
   end
 end
