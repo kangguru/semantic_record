@@ -1,1 +1,23 @@
 This is semantic_record more information tba
+
+Installation
+===
+
+- Mac OS X:
+  - install redland (use of macports is advised)
+  - install redland-language binbings for ruby (http://librdf.org/bindings/)
+    - extract
+    - ./configure --with-ruby= "where your ruby lives"
+    - make check
+    - make install
+    
+- other e.g. Ubuntu
+  - install redland (apt-get install redland-utils)
+  - install language bindings (apt-get install librdf-ruby)
+
+- install other dependencies (see Rakefile or try'n error)
+- setup test-environment
+  - provide yml file or setup store directly
+- rake spec
+- you're done  
+    
