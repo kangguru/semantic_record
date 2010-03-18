@@ -15,6 +15,7 @@ Installation
   - install redland (apt-get install redland-utils)
   - install language bindings (apt-get install librdf-ruby)
 
+- install sparql gem from http://github.com/kangguru/sparql
 - install other dependencies (see Rakefile or try'n error)
 - setup test-environment
   - provide yml file or setup store directly
