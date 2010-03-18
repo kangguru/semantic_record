@@ -12,7 +12,7 @@ rescue LoadError
   end
 end
 
-require 'sparql_parser/sparql'
+require 'sparql'
 require 'semantic_record/triple_manager'
 require 'semantic_record/base'
 require 'semantic_record/property'
