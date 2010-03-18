@@ -99,7 +99,6 @@ module TripleManager
 
   def self.get_subjects(s)
     query_string = "SELECT ?result WHERE {?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> #{s}}" 
-
     get_by_sparql(query_string,false)     
   end
 
