@@ -3,13 +3,14 @@ require 'lib/semantic_record'
 require 'spec/rake/spectask'
 require 'echoe'
 
-Echoe.new('semantic_record', '0.1.0') do |p|
+Echoe.new('semantic_record', '0.1.1') do |p|
   p.description    = "use sesame as backend for rails or any other ruby app"
   p.url            = "http://semanticrecord.aufnahme.com"
   p.author         = "Lars Brillert"
   p.email          = "development@aufnahme.com"
   p.ignore_pattern = ["coverage/*", "pkg/*"]
-  p.development_dependencies = []
+  p.development_dependencies = ["echoe","rspec"]
+  p.runtime_dependencies = ["curb","ruby-sesame","redland","treetop","json"]
 end
 
 desc "Run all specs"
