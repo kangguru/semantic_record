@@ -28,5 +28,12 @@ describe Namespaces do
     Genre.base.should_not eql(SemanticRecord::Base.base)
   end
   
+  it "expand some things" do
+    "rdf_type".expand.should == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+    "rdf_type_".expand.should == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+    "rdf_type_asdas_".expand.should == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type-asdas"
+    "rdf_type_asdas_=".expand.should == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type-asdas"
+  end
+  
   
 end

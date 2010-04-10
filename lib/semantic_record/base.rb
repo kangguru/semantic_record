@@ -80,7 +80,8 @@ module SemanticRecord
       
       def self.method_missing(mth,*args)
         if mth.to_s =~ /^find_by_([_a-zA-Z]\w*)$/
-          
+          pp = $1
+        
           if self == SemanticRecord::Base
               s = "?nil"
             else
@@ -90,8 +91,9 @@ module SemanticRecord
               else
                 raise ArgumentError, "base uri seems to be invalid"
               end
-            end
-          conditions = "?result <#{$1.to_sym.expand}> <#{args.first}>."
+          end
+          puts pp 
+          conditions = "?result <#{pp.expand}> <#{args.first}>."
           
           instances_response = TripleManager.get_subjects(s, :conditions => conditions)
         else
