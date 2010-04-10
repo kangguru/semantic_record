@@ -9,9 +9,7 @@ module TripleManager
     unless exists_as_subject?(uri)
       count = @@transit_model.size
       populate_model_with_result( "CONSTRUCT {<#{uri}> ?p ?o} WHERE {<#{uri}> ?p ?o}" )
-      if count == @@transit_model.size
-          populate_model_with_result_from_http(uri)
-      end
+      populate_model_with_result_from_http(uri)
     end
   end
 
@@ -61,16 +59,20 @@ module TripleManager
     q = query
     parser = Redland::Parser.new
     SemanticRecord::Pool.connections.each do |connection|
+      puts "#{connection.socket.uri} with: #{q}"
+      
       content = connection.socket.query(q,:result_type => RubySesame::DATA_TYPES[:RDFXML],:infer => true )
       parser.parse_string_into_model(@@transit_model,content,Redland::Uri.new( "http://example.org/" ))           
     end
   end
 
   def self.get_by_sparql(query_string,with_population=false)
+    
+    
     query = Redland::Query.new(query_string)
     result = @@transit_model.query_execute(query)
     
-    if result.size == 0
+    #if result.size == 0
       parser = SparqlParser.new
       query_object = parser.parse(query_string)
       bindings = "#{query_object.query_part.bindings} ?p ?o"
@@ -79,7 +81,7 @@ module TripleManager
       construct_query = "CONSTRUCT {#{bindings}} WHERE #{where_clause} "
 
       populate_model_with_result(construct_query)
-    end
+    #end
     query = Redland::Query.new(query_string)
     result = @@transit_model.query_execute(query)
     
@@ -97,8 +99,10 @@ module TripleManager
     end
   end
 
-  def self.get_subjects(s)
-    query_string = "SELECT ?result WHERE {?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> #{s}}" 
+  def self.get_subjects(s, options = {} )
+    conditions = options.delete(:conditions)
+    query_string = "SELECT DISTINCT ?result WHERE {?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> #{s}. #{conditions} }" 
+#    raise  query_string.inspect
     get_by_sparql(query_string,false)     
   end
 
@@ -111,7 +115,9 @@ module TripleManager
     end
   
     query_string = "SELECT ?result WHERE {<#{subject}> <#{predicate}> ?result #{filter} }"
-
+    
+    puts query_string
+    
     get_by_sparql(query_string)
   end
 

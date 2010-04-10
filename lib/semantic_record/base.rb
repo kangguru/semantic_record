@@ -78,6 +78,28 @@ module SemanticRecord
         true
       end
       
+      def self.method_missing(mth,*args)
+        if mth.to_s =~ /^find_by_([_a-zA-Z]\w*)$/
+          
+          if self == SemanticRecord::Base
+              s = "?nil"
+            else
+              uri = URI.parse self.uri #"#{self.base}#{self}"
+              if uri.absolute && uri.path
+                s = "<#{uri.to_s}>"
+              else
+                raise ArgumentError, "base uri seems to be invalid"
+              end
+            end
+          conditions = "?result <#{$1.to_sym.expand}> <#{args.first}>."
+          
+          instances_response = TripleManager.get_subjects(s, :conditions => conditions)
+        else
+          super
+        end
+        
+      end
+      
       def method_missing(mth,*args)
         if mth.id2name.end_with?("=")
           proxy_setter(mth,*args)
@@ -114,11 +136,13 @@ module SemanticRecord
       def self.find_by_sparql(query)
         TripleManager.get_by_sparql(query,true)
       end
+    
       
       def self.find
         # if self isn't an inherited form of this
-        # class then return all existing instances        
-        if self == SemanticRecord
+        # class then return all existing instances
+        
+       if self == SemanticRecord
           s = "?nil"
         else
           uri = URI.parse self.uri #"#{self.base}#{self}"
@@ -128,11 +152,16 @@ module SemanticRecord
             raise ArgumentError, "base uri seems to be invalid"
           end
         end
+                
         instances_response = TripleManager.get_subjects(s)
 
       end
 
       protected
+      
+      def self.check_context
+   
+      end
       
       def proxy_setter(mth,*args)
         predicate = mth.to_sym.expand#(mth)

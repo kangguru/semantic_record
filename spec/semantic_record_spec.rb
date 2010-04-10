@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/spec_helper'
+ require File.dirname(__FILE__) + '/spec_helper'
 
 describe "SemanticRecord::Base" do
   before(:each) do
@@ -112,10 +112,10 @@ describe "SemanticRecord::Base" do
     
     inst.size.should equal(1)
   end
-
-  it "should description" do
-    inst = SemanticRecord::Base.find_by_sparql('SELECT ?result WHERE { ?result <http://www.w3.org/2000/01/rdf-schema#label> "LarsBrillert"}').first
+  
+  it "should find by dynamic finder" do
+    inst = SemanticRecord::Base.find_by_rdf_type("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Kategorie-3AWPF_A")
     
-    #raise inst.attributes.inspect
+    inst.size.should == 2
   end
 end
