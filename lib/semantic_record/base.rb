@@ -92,8 +92,11 @@ module SemanticRecord
                 raise ArgumentError, "base uri seems to be invalid"
               end
           end
-          puts pp 
-          conditions = "?result <#{pp.expand}> <#{args.first}>."
+          puts pp
+          
+          objects = args.collect{|arg| "<#{arg}>"}.join(",")
+           
+          conditions = "?result <#{pp.expand}> #{objects}."
           
           instances_response = TripleManager.get_subjects(s, :conditions => conditions)
         else

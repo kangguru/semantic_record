@@ -114,8 +114,13 @@ describe "SemanticRecord::Base" do
   end
   
   it "should find by dynamic finder" do
+    inst = SemanticRecord::Base.find_by_rdf_type("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Kategorie-3AMitarbeiter","http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Kategorie-3AStudent")
+    inst.size.should == 4
+
+
     inst = SemanticRecord::Base.find_by_rdf_type("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Kategorie-3AWPF_A")
-    
     inst.size.should == 2
+    
+
   end
 end
