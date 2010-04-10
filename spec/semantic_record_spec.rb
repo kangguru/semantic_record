@@ -120,7 +120,17 @@ describe "SemanticRecord::Base" do
 
     inst = SemanticRecord::Base.find_by_rdf_type("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/Kategorie-3AWPF_A")
     inst.size.should == 2
-    
-
   end
+  
+  it "should know about equality" do
+    
+    @soul = Genre.new("http://soul-fantastic.com/#soul")
+    @soul2 = Genre.new("http://soul-fantastic.com/#soul")
+    
+    @soul.should == @soul2
+  
+    [@soul,@soul2].uniq_by{|obj| obj.uri}.should == [@soul]  
+  end
+  
+  
 end

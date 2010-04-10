@@ -69,8 +69,7 @@ module TripleManager
   end
 
   def self.get_by_sparql(query_string,with_population=false)
-    
-    
+    puts query_string
     query = Redland::Query.new(query_string)
     result = @@transit_model.query_execute(query)
     

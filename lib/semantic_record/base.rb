@@ -11,6 +11,10 @@ module SemanticRecord
         attr_accessor :base, :connection,:rdf_type,:uri
       end
 
+      def ==(comparable)
+          self.uri == comparable.uri
+        end
+      
       def initialize(uri)
         @uri = uri
         @presaved_attributes = {}
