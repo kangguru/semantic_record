@@ -22,7 +22,7 @@ describe SemanticRecord::Base do
   
   it "should description" do
     blitz = SemanticRecord::Base.new("http://www.medieninformatik.fh-koeln.de/miwiki/Spezial:URIResolver/BLITZ_-2D_kollaboratives_mobiles_multimediales_System_zur_Unterst-C3-BCtzung_von_Besprechungen")
-    atts = blitz.attribute("http://www.aktors.org/ontology/portal#addresses-generic-area-of-interest")
-    raise atts.inspect
+    atts = blitz.attribute("http://www.aktors.org/ontology/portal#addresses-generic-area-of-interest")[:value]
+    raise atts.first.attribute("http://www.w3.org/2000/01/rdf-schema#label").inspect
   end
 end

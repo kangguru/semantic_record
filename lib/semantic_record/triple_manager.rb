@@ -6,17 +6,17 @@ module TripleManager
   @@transit_model = Redland::Model.new( Redland::MemoryStore.new )
 
   def self.describe(uri)
-    unless exists_as_subject?(uri)
+    #unless exists_as_subject?(uri)
       count = @@transit_model.size
       populate_model_with_result( "CONSTRUCT {<#{uri}> ?p ?o} WHERE {<#{uri}> ?p ?o}" )
       populate_model_with_result_from_http(uri)
-    end
+    #end
   end
 
   def self.property_for(s,p)
-    unless exists_as_subject?( p )
+    #unless exists_as_subject?( p )
       populate_model_with_result_from_http( p )
-    end 
+    #end 
 
     resource = @@transit_model.get_resource( Redland::Uri.new(p) )
     value = get_objects(s,p)
@@ -34,6 +34,7 @@ module TripleManager
   end
 
   def self.populate_model_with_result_from_http(uri)
+    puts "getting for #{uri}"
     curl = Curl::Easy.new(uri)
     curl.headers["Accept"] = "application/rdf+xml"
     curl.follow_location = true
@@ -45,6 +46,7 @@ module TripleManager
       if !!(curl.content_type =~ /application\/rdf\+xml/)
         parser = Redland::Parser.new
         parser.parse_string_into_model(@@transit_model,curl.body_str,Redland::Uri.new( uri ))            
+        puts "success"
       end
     rescue
         
@@ -59,7 +61,7 @@ module TripleManager
     q = query
     parser = Redland::Parser.new
     SemanticRecord::Pool.connections.each do |connection|
-      puts "#{connection.socket.uri} with: #{q}"
+      #puts "#{connection.socket.uri} with: #{q}"
       
       content = connection.socket.query(q,:result_type => RubySesame::DATA_TYPES[:RDFXML],:infer => true )
       parser.parse_string_into_model(@@transit_model,content,Redland::Uri.new( "http://example.org/" ))           
@@ -116,7 +118,7 @@ module TripleManager
   
     query_string = "SELECT ?result WHERE {<#{subject}> <#{predicate}> ?result #{filter} }"
     
-    puts query_string
+    #puts query_string
     
     get_by_sparql(query_string)
   end

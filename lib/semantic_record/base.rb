@@ -94,7 +94,10 @@ module SemanticRecord
           end
           puts pp
           
-          objects = args.collect{|arg| "<#{arg}>"}.join(",")
+          a = args.first.class == Array ? args.first : args
+          
+          
+          objects = a.collect{|arg| "<#{arg}>"}.join(",")
            
           conditions = "?result <#{pp.expand}> #{objects}."
           
