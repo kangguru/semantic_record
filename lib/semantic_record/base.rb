@@ -58,6 +58,7 @@ module SemanticRecord
             
       def save
         if new_record?
+          puts "saving new"
           begin 
             @presaved_attributes.each {|predicate,value|
               value.each do |val|
@@ -70,6 +71,7 @@ module SemanticRecord
             return false
           end           
         else
+          puts "saving old"
           begin
 
             TripleManager.update(uri,@presaved_attributes)

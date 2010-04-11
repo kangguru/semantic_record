@@ -148,21 +148,30 @@ module TripleManager
   end
 
   def self.add(subject,predicate,object,context=nil)
+    trans = Foxen::TransactionFactory.new
+    trans.add_add_statement(subject,predicate,object)
     s,p,o = build(subject,predicate,object)
     @@transit_model.add(s,p,o,context)
+    SemanticRecord::Pool.get_default_store.socket.add!(trans.to_s, "application/x-rdftransaction")
   end
 
   def self.update(subject,attributes)
+    trans = Foxen::TransactionFactory.new
+    
     attributes.each do |predicate,objects|
       sub,pre = build(subject,predicate,nil)
+      trans.add_remove_statement(subject,predicate,nil)
       @@transit_model.find(sub,pre).each do |removable_statement|
         @@transit_model.delete_statement(removable_statement)
       end   
       objects.each do |object|
+        trans.add_add_statement(subject,predicate,object)
         s,p,o = build(subject,predicate,object)
         @@transit_model.add(s,p,o) 
       end
     end
+    #raise trans.to_s.inspect
+    SemanticRecord::Pool.get_default_store.socket.add!(trans.to_s, "application/x-rdftransaction")
   end
   
   def self.count

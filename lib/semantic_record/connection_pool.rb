@@ -8,6 +8,10 @@ module SemanticRecord::Pool
     @connections << Connection.new(connection)
   end
   
+  def self.get_default_store
+    connections.select{|con| con.default && con.writable}.first
+  end
+  
   def self.connections
     @connections
   end
