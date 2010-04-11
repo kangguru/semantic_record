@@ -1,8 +1,16 @@
 require 'rdf/redland'
-require 'curb'
+require 'httparty'
+require 'httparty_sober'
 
 module TripleManager
+  
+  class RemoteRessource
+    include HTTParty
+    include HTTParty::Sober
 
+    headers 'Accept' => "application/rdf+xml"
+  end
+  
   @@transit_model = Redland::Model.new( Redland::MemoryStore.new )
 
   def self.describe(uri)
@@ -33,20 +41,37 @@ module TripleManager
     get_by_sparql(query_string)    
   end
 
+  
+  # 
+  #   response = Query.get_with_caching("http://google.com")
+  # 
+  #   @@transit_model = Redland::Model.new( Redland::MemoryStore.new )
+  # 
+  #   puts response.headers["content-type"]
+  # 
+  #   parser = Redland::Parser.new
+  #   parser.parse_string_into_model(@@transit_model,response,Redland::Uri.new( "http://example.org" ))            
+  #   puts "success"
+  # 
+  #   
+
   def self.populate_model_with_result_from_http(uri)
     puts "getting for #{uri}"
-    curl = Curl::Easy.new(uri)
-    curl.headers["Accept"] = "application/rdf+xml"
-    curl.follow_location = true
-    curl.connect_timeout = 2
-    curl.max_redirects = 5
+    # curl = Curl::Easy.new(uri)
+    # curl.headers["Accept"] = "application/rdf+xml"
+    # curl.follow_location = true
+    # curl.connect_timeout = 2
+    # curl.max_redirects = 5
     begin 
-      body = curl.perform
+      response = RemoteRessource.get_with_caching(uri)
+      puts response.headers['content-type']
       # only process responce if content-type matches
-      if !!(curl.content_type =~ /application\/rdf\+xml/)
+      if !!(response.headers['content-type'].to_s =~ /application\/rdf\+xml/)
         parser = Redland::Parser.new
-        parser.parse_string_into_model(@@transit_model,curl.body_str,Redland::Uri.new( uri ))            
+        parser.parse_string_into_model(@@transit_model,response.to_s,Redland::Uri.new( uri ))            
         puts "success"
+      else 
+        puts "fail :/"
       end
     rescue
         
@@ -69,7 +94,7 @@ module TripleManager
   end
 
   def self.get_by_sparql(query_string,with_population=false)
-    puts query_string
+    #puts query_string
     query = Redland::Query.new(query_string)
     result = @@transit_model.query_execute(query)
     
