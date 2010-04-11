@@ -178,14 +178,15 @@ module SemanticRecord
       end
       
       def proxy_setter(mth,*args)
-        predicate = mth.to_sym.expand#(mth)
+        predicate = mth.id2name.expand#(mth)
+        puts "set for: #{predicate}: #{args}"
         @presaved_attributes[predicate] = args.flatten
       end  
 
       def proxy_getter(mth,*args)
            
-        predicate = mth.to_sym.expand#(mth)
-
+        predicate = mth.id2name.expand#(mth)
+        puts "get for: #{predicate}"
         if @presaved_attributes.has_key?(predicate)
            value_response = @presaved_attributes[predicate]
         else

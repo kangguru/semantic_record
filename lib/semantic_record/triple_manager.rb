@@ -190,9 +190,11 @@ module TripleManager
     s = Redland::Resource.new( subject )
     p = Redland::Resource.new( predicate )
 
-    if object.kind_of?(SemanticRecord) || (object.kind_of?(Class) && object.respond_to?(:uri) )
-      o = Redland::Resource.new( object.uri )
+    if object.kind_of?(SemanticRecord) || (object.kind_of?(Class) && object.respond_to?(:uri) || object.to_s =~ /https?:\/\//)
+      puts "write a ressource #{object.inspect}"
+      o = Redland::Resource.new( object.respond_to?(:uri) ? object.uri : object.to_s )
     else
+      puts "write a literal #{object.inspect}"
       o = object.to_s
     end
 
