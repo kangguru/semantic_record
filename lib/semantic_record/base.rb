@@ -170,7 +170,11 @@ module SemanticRecord
         instances_response = TripleManager.get_subjects(s)
 
       end
-
+      
+      def name
+        rdfs_label.blank? ? uri.humanize : rdfs_label
+      end
+      
       protected
       
       def self.check_context

@@ -28,6 +28,11 @@ module SemanticRecord
         
         return namespace + predicate
       end
+      
+      def humanize
+        self.split('#').size > 1 ? self.split('#').last : self.split('/').last
+      end
+      
     end
     
     Array.class_eval do
