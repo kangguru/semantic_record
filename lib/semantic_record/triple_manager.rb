@@ -2,6 +2,11 @@ require 'rdf/redland'
 require 'httparty'
 require 'httparty_sober'
 
+# require 'moneta'
+# require 'moneta/memcache'
+# 
+# APICache.store = Moneta::Memcache.new(:server => "localhost")
+
 module TripleManager
   
   class RemoteRessource
@@ -11,8 +16,13 @@ module TripleManager
     headers 'Accept' => "application/rdf+xml"
   end
   
+  @@cache_timeout = Time.now
   @@transit_model = Redland::Model.new( Redland::MemoryStore.new )
-
+  
+  def self.cache_timeout=(seconds)
+    @@cache_timeout = seconds
+  end
+  
   def self.describe(uri)
     #unless exists_as_subject?(uri)
       count = @@transit_model.size
@@ -23,7 +33,7 @@ module TripleManager
 
   def self.property_for(s,p)
     #unless exists_as_subject?( p )
-      populate_model_with_result_from_http( p )
+    populate_model_with_result_from_http( p )
     #end 
 
     resource = @@transit_model.get_resource( Redland::Uri.new(p) )
@@ -63,7 +73,7 @@ module TripleManager
     # curl.connect_timeout = 2
     # curl.max_redirects = 5
     begin 
-      response = RemoteRessource.get_with_caching(uri)
+      response = RemoteRessource.get_with_caching(uri,{:timeout => 1, :limit => 2})
       puts response.headers['content-type']
       # only process responce if content-type matches
       if !!(response.headers['content-type'].to_s =~ /application\/rdf\+xml/)
@@ -91,22 +101,31 @@ module TripleManager
       content = connection.socket.query(q,:result_type => RubySesame::DATA_TYPES[:RDFXML],:infer => true )
       parser.parse_string_into_model(@@transit_model,content,Redland::Uri.new( "http://example.org/" ))           
     end
+    
   end
 
   def self.get_by_sparql(query_string,with_population=false)
-    #puts query_string
-    query = Redland::Query.new(query_string)
-    result = @@transit_model.query_execute(query)
+    
+    #query = Redland::Query.new(query_string)
+    #result = @@transit_model.query_execute(query)
     
     #if result.size == 0
-      parser = SparqlParser.new
-      query_object = parser.parse(query_string)
-      bindings = "#{query_object.query_part.bindings} ?p ?o"
-      where_clause = query_object.query_part.where.group_graph_pattern.text_value.insert(1,"#{bindings}.")
+    if Time.now - @@cache_timeout > 60
+      puts "=========================="
+      puts "clear"
+      puts "=========================="
+      Redland::Model.new( Redland::MemoryStore.new )
+      @@cache_timeout = Time.now
+    end
+    
+    parser = SparqlParser.new
+    query_object = parser.parse(query_string)
+    bindings = "#{query_object.query_part.bindings} ?p ?o"
+    where_clause = query_object.query_part.where.group_graph_pattern.text_value.insert(1,"#{bindings}.")
 
-      construct_query = "CONSTRUCT {#{bindings}} WHERE #{where_clause} "
+    construct_query = "CONSTRUCT {#{bindings}} WHERE #{where_clause} "
 
-      populate_model_with_result(construct_query)
+    populate_model_with_result(construct_query)
     #end
     query = Redland::Query.new(query_string)
     result = @@transit_model.query_execute(query)

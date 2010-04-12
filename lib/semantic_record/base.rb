@@ -171,6 +171,11 @@ module SemanticRecord
 
       end
       
+      def find_others
+        puts "assadas"
+        self.class.find_by_rdf_type(self.uri)
+      end
+      
       def name
         rdfs_label.blank? ? uri.humanize : rdfs_label
       end
@@ -183,14 +188,14 @@ module SemanticRecord
       
       def proxy_setter(mth,*args)
         predicate = mth.id2name.expand#(mth)
-        puts "set for: #{predicate}: #{args}"
+        
         @presaved_attributes[predicate] = args.flatten
       end  
 
       def proxy_getter(mth,*args)
            
         predicate = mth.id2name.expand#(mth)
-        puts "get for: #{predicate}"
+        
         if @presaved_attributes.has_key?(predicate)
            value_response = @presaved_attributes[predicate]
         else
