@@ -27,14 +27,18 @@ module TripleManager
     #unless exists_as_subject?(uri)
       count = @@transit_model.size
       populate_model_with_result( "CONSTRUCT {<#{uri}> ?p ?o} WHERE {<#{uri}> ?p ?o}" )
-      populate_model_with_result_from_http(uri)
+      #populate_model_with_result_from_http(uri)
     #end
   end
 
   def self.property_for(s,p)
-    #unless exists_as_subject?( p )
-    populate_model_with_result_from_http( p )
-    #end 
+    puts "#{s}, #{p}"
+    if @@transit_model.find(s,p).empty?
+      populate_model_with_result_from_http( s )
+      unless exists_as_subject?( p )
+        populate_model_with_result_from_http( p )
+      end 
+    end
 
     resource = @@transit_model.get_resource( Redland::Uri.new(p) )
     value = get_objects(s,p)
@@ -73,7 +77,7 @@ module TripleManager
     # curl.connect_timeout = 2
     # curl.max_redirects = 5
     begin 
-      response = RemoteRessource.get_with_caching(uri,{:timeout => 1, :limit => 2})
+      response = RemoteRessource.get_with_caching(uri)
       puts response.headers['content-type']
       # only process responce if content-type matches
       if !!(response.headers['content-type'].to_s =~ /application\/rdf\+xml/)
@@ -152,7 +156,11 @@ module TripleManager
   end
 
   def self.get_objects(subject,predicate,*args)
+    #puts predicate
+    #puts @@transit_model.find(subject,predicate).size
 
+    #populate_model_with_result_from_http( subject )    
+    
     unless args.empty?
       filter = "FILTER ( lang(?result) = '#{args[0][:lang]}' )"
     else
@@ -161,9 +169,15 @@ module TripleManager
   
     query_string = "SELECT ?result WHERE {<#{subject}> <#{predicate}> ?result #{filter} }"
     
-    #puts query_string
+    result = get_by_sparql(query_string)
     
-    get_by_sparql(query_string)
+    #puts query_string
+    if result.empty?
+      populate_model_with_result_from_http( subject )      
+      get_by_sparql(query_string)
+    else
+      result
+    end
   end
 
   def self.add(subject,predicate,object,context=nil)

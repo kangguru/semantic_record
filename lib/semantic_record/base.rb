@@ -98,7 +98,6 @@ module SemanticRecord
                 raise ArgumentError, "base uri seems to be invalid"
               end
           end
-          puts pp
           
           a = args.first.class == Array ? args.first : args
           
@@ -172,12 +171,17 @@ module SemanticRecord
       end
       
       def find_others
-        puts "assadas"
         self.class.find_by_rdf_type(self.uri)
       end
       
-      def name
-        rdfs_label.blank? ? uri.humanize : rdfs_label
+      def name(fallback = :rdfs_label)
+        name = self.send(fallback)
+        
+        name.blank? ? uri.humanize : name
+      end
+      
+      def title()
+        name(:aktors_has_title_)
       end
       
       protected
